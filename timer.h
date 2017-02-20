@@ -4,6 +4,7 @@
 long timer_centi_seconds;
 long timer_deci_seconds;
 long timer_seconds;
+bool timer_seconds_signal;
 
 
 ISR(TIMER1_COMPA_vect)
@@ -13,6 +14,7 @@ ISR(TIMER1_COMPA_vect)
     if(timer_deci_seconds == 10){
       timer_deci_seconds = 0;
       timer_seconds++;
+      timer_seconds_signal = true;
       PORTB ^= 1<<7;
     } else timer_deci_seconds++;
   } else timer_centi_seconds++;
@@ -58,6 +60,11 @@ long timer_DeciSeconds() {
 }
 long timer_Seconds() {
   return timer_seconds;
+}
+bool timer_Seconds_Signal() {
+  bool val = timer_seconds_signal;
+  timer_seconds_signal = 0;
+  return val;
 }
 
 
