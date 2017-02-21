@@ -2,7 +2,7 @@
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7); 
 
-
+#include "time.h"
 #include "timer.h"
 #include "com.h"
 #include "button.h"
@@ -25,7 +25,8 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
  */
 
 char state;
-int selected_work_time;
+Time objTime;
+Time objTimeOne;
 Button btnOne,btnTwo;
 Button btnTimeUp,btnTimeDown;
 
@@ -46,6 +47,8 @@ void setup() {
   btnTwo = btnCreate(&PINB,PB1);
   btnTimeUp = btnCreate(&PINB,PB2);
   btnTimeDown = btnCreate(&PINB,PB3);
+  objTime = time_new();
+  objTimeOne = time_new();
   
   state = STATE_BASE;
   
@@ -54,7 +57,6 @@ void setup() {
   setup_com();
 
   state = 0;
-  selected_work_time = 0;
 
   lcd.begin(16, 2);
   lcd.clear();
@@ -94,9 +96,9 @@ void loop() {
 
 void state_base() {
   lcd.setCursor(0,1);
-  lcd.print("STATE: BASE");
+  lcd.print("STATE: KARIM");
   if(btnOne._signal && !btnTwo._signal) {
-    if(selected_work_time>0)state = STATE_START;
+    if(TimeToSeconds(objTime)>0)state = STATE_START;
     else state = STATE_TIME;//PICCOLO BUG LOGICO MA PER ORA ME LO TENGO ... direbbero pocomale i sommi
     lcd.clear();
   }
@@ -106,20 +108,20 @@ void state_base() {
   }
 }
 void state_start() {
-  lcd.setCursor(0,2);
-  lcd.print("START WORK");
-  lcd.print("                ");
   start_timer();
   state = STATE_WORK; 
   PORTL ^= 3;
 }
 void state_work() {
   if(timer_Seconds_Signal()) {
+    lcd.setCursor(0, 1);
+    lcd.print("STATE: WORK     ");
     lcd.setCursor(0, 2);
-    lcd.print("Seconds: ");
-    lcd.print(timer_Seconds());
+    objTimeOne = objTime;
+    time_set_down(&objTimeOne,timer_Seconds());
+    lcd.print(time_to_str_hms(objTimeOne));
   }
-  if((timer_Seconds() == selected_work_time) || btnTwo._signal) state = STATE_STOP;
+  if((timer_Seconds() == TimeToSeconds(objTime)) || btnTwo._signal) state = STATE_STOP;
 }
 void state_stop() {
   stop_timer();
@@ -137,26 +139,20 @@ void state_time() {
   if(btnTimeUp._signal && btnTimeDown._signal) return;
   else {
     if(btnTimeUp._signal) {
-      //PER ORA DICO MASSIMO 3 ORE POI SI VEDRA'
-      selected_work_time = (selected_work_time+30<3600*3)?selected_work_time+30:3600*3;
+      if(time_leq(objTime,2,59,59)) {
+        time_set_up(&objTime,1);
+      }
     }
     if(btnTimeDown._signal) {
-      selected_work_time = (selected_work_time-30>0)?selected_work_time-30:0; 
+      if(time_geq(objTime,0,0,1)) time_set_down(&objTime,1);
     }
   }
-  int h = selected_work_time/3600;
-  int m = (selected_work_time-h*3600)/60;
-  int s = selected_work_time-h*3600-m*60;
-  char txt[16];
-  sprintf(txt,"hh:mm:ss%02d:%02d:%02d",h,m,s);
   lcd.setCursor(0,1);
-  lcd.print(txt);
+  lcd.print(time_to_str(objTime));
   if(btnOne._signal) {
-    Serial.println("non sono convinto");
     state=STATE_BASE;
     while(btnOne._signal) btnUpdate(&btnOne);;//NON E' TROPPO BELLO PER STARE IN UNA SPECIE DI MACCHINA A STATI
     lcd.clear();
-    Serial.println("Perdio");
   }
 }
 
