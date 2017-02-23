@@ -7,7 +7,6 @@ void setup_com() {
   Serial.begin(BAUDRATE);
 }
 
-
 // sembra abbastanza inutile come header
 
 

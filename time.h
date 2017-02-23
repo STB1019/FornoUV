@@ -12,15 +12,7 @@ Time time_new() {
   Time t = {0,0,0};
   return t;
 }
-int time_get_seconds(Time t) {
-  return t.s;
-}
-int time_get_minutes(Time t) {
-  return t.m;
-}
-int time_get_hours(Time t) {
-  return t.h;
-}
+
 void time_set(int h, int m, int s, Time* t) {
 }
 void time_set_up(Time* t,int up) {
@@ -56,7 +48,7 @@ char* time_to_str(Time t) {
 }
 char* time_to_str_hms(Time t) {
   char str[16];
-  sprintf(str,"%02d:%02d:%02d       ",t.h,t.m,t.s);
+  sprintf(str,"%02d:%02d:%02d        ",t.h,t.m,t.s);
   return str;
 }
 

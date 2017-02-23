@@ -51,13 +51,6 @@ void start_timer() {
   sei();   
 }
 
-
-long timer_CentiSeconds() {
-  return timer_centi_seconds;
-}
-long timer_DeciSeconds() {
-  return timer_deci_seconds;
-}
 long timer_Seconds() {
   return timer_seconds;
 }
