@@ -36,7 +36,7 @@ void lcdOutputFn(char *r1,char *r2) {
 };*/
 
 
-#include "time.h"
+#include "gmTime.h"
 #include "timer.h"
 #include "com.h"
 #include "button.h"
@@ -81,8 +81,8 @@ void setup() {
   btnTwo = btnCreate(&PINB, PB1);
   btnTimeUp = btnCreate(&PINB, PB2);
   btnTimeDown = btnCreate(&PINB, PB3);
-  objTime = time_new();
-  objTimeOne = time_new();
+  objTime = Time();
+  objTimeOne = Time();
 
   state = STATE_BASE;
   stop_timer();
@@ -122,7 +122,7 @@ void loop() {
       lcd.setCursor(0,0);
       lcd.print("STATE: WORK     ");
       lcd.setCursor(0,1);
-      lcd.print(time_to_str_hms(objTimeOne));
+      lcd.print(objTimeOne.toStringHM());
       state_work();
       break;
     case STATE_STOP:
@@ -137,32 +137,29 @@ void loop() {
       lcd.print("STATE: TIME     ");
       state_time();
       lcd.setCursor(0, 1);
-      lcd.print(time_to_str(objTime));
+      lcd.print(objTime.toStringHM());
       break;
     case STATE_TIME_UP:
       lcd.setCursor(0, 0);
       lcd.print("STATE: TIME UP  ");
       state_time_up();
       lcd.setCursor(0, 1);
-      lcd.print(time_to_str(objTime));
+      lcd.print(objTime.toStringHM());
       break;
     case STATE_TIME_DOWN:
       lcd.setCursor(0, 0);
       lcd.print("STATE: TIME DOWN");
       state_time_down();
       lcd.setCursor(0, 1);
-      lcd.print(time_to_str(objTime));
+      lcd.print(objTime.toStringHM());
       break;
   }
-
-  ///mi piacerebbe settare le stringhe nel programma e stamparle qui
-  //cosi lcd compare solo qui
 }
 
 
 void state_base() {
   if (btnOne._signal && !btnTwo._signal) {
-    if (TimeToSeconds(objTime) > 0)state = STATE_START;
+    if (objTime.toSeconds() > 0)state = STATE_START;
     else state = STATE_TIME;//PICCOLO BUG LOGICO MA PER ORA ME LO TENGO ... direbbero pocomale i sommi
   }
   if (btnTimeUp._signal || btnTimeDown._signal) {
@@ -179,9 +176,9 @@ void state_start() {
 void state_work() {
   if (timer_Seconds_Signal()) {
     objTimeOne = objTime;
-    time_set_down(&objTimeOne, timer_Seconds());
+    objTimeOne.decSeconds(timer_Seconds());
   }
-  if ((timer_Seconds() == TimeToSeconds(objTime)) || btnTwo._signal) state = STATE_STOP;
+  if ((timer_Seconds() == objTime.toSeconds()) || btnTwo._signal) state = STATE_STOP;
 }
 void state_stop() {
   stop_timer();
@@ -208,8 +205,8 @@ void state_time() {
 }
 void state_time_up() {
   int up_s = pow(timer_Seconds() + 1, 2);
-  if (time_leq(objTime, 2, 59, 60 - up_s)) {
-    time_set_up(&objTime, up_s);
+  if(objTime.lessEqual( 2, 59, 60 - up_s)) {
+    objTime.incSeconds(up_s);
   }
   if (!btnTimeUp._signal) {
     state = STATE_TIME;
@@ -218,8 +215,8 @@ void state_time_up() {
 }
 void state_time_down() {
   int dw_s = pow(timer_Seconds() + 1, 2);
-  if (time_geq(objTime, 0, 0, dw_s)) {
-    time_set_down(&objTime, dw_s);
+  if (objTime.aboveEqual(0, 0, dw_s)) {
+    objTime.decSeconds(dw_s);
   }
   if (!btnTimeDown._signal) {
     state = STATE_TIME;
