@@ -37,7 +37,8 @@ void lcdOutputFn(char *r1,char *r2) {
 
 
 #include "gmTime.h"
-#include "timer.h"
+#include "gmTimer.h"
+
 #include "com.h"
 #include "button.h"
 
@@ -60,6 +61,7 @@ void lcdOutputFn(char *r1,char *r2) {
    49  48  47  46  45  44  43  42
 */
 
+OneSecondTimer timer;
 char state;
 Time objTime,objTimeOne;
 Button btnOne, btnTwo, btnTimeUp, btnTimeDown;
@@ -85,7 +87,10 @@ void setup() {
   objTimeOne = Time();
 
   state = STATE_BASE;
-  stop_timer();
+  timer = OneSecondTimer();
+  timer.stop();
+
+  
   setup_com();
   state = 0;
   lcd.begin(16, 2);
@@ -164,24 +169,24 @@ void state_base() {
   }
   if (btnTimeUp._signal || btnTimeDown._signal) {
     state = STATE_TIME;
-    start_timer();
+    timer.start();
   }
 }
 
 void state_start() {
-  start_timer();
+  timer.start();
   state = STATE_WORK;
   PORTL ^= 3;
 }
 void state_work() {
-  if (timer_Seconds_Signal()) {
+  if (timer.getSignal()) {
     objTimeOne = objTime;
-    objTimeOne.decSeconds(timer_Seconds());
+    objTimeOne.decSeconds(timer.getSeconds());
   }
-  if ((timer_Seconds() == objTime.toSeconds()) || btnTwo._signal) state = STATE_STOP;
+  if ((timer.getSeconds() == objTime.toSeconds()) || btnTwo._signal) state = STATE_STOP;
 }
 void state_stop() {
-  stop_timer();
+  timer.stop();
   state = STATE_BASE;
   PORTL ^= 3;
 }
@@ -191,11 +196,11 @@ void state_time() {
   else {
     if (btnTimeUp._signal) {
       state = STATE_TIME_UP;
-      start_timer();
+      timer.start();
     }
     if (btnTimeDown._signal) {
       state = STATE_TIME_DOWN;
-      start_timer();
+      timer.start();
     }
   }
   if (btnOne._signal) {
@@ -204,23 +209,23 @@ void state_time() {
   }
 }
 void state_time_up() {
-  int up_s = pow(timer_Seconds() + 1, 2);
+  int up_s = pow(timer.getSeconds() + 1, 2);
   if(objTime.lessEqual( 2, 59, 60 - up_s)) {
     objTime.incSeconds(up_s);
   }
   if (!btnTimeUp._signal) {
     state = STATE_TIME;
-    stop_timer();
+    timer.stop();
   }
 }
 void state_time_down() {
-  int dw_s = pow(timer_Seconds() + 1, 2);
+  int dw_s = pow(timer.getSeconds() + 1, 2);
   if (objTime.aboveEqual(0, 0, dw_s)) {
     objTime.decSeconds(dw_s);
   }
   if (!btnTimeDown._signal) {
     state = STATE_TIME;
-    stop_timer();
+    timer.stop();
   }
 }
 
