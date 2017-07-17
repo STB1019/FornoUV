@@ -1,4 +1,12 @@
+/**
+* Quest'opera è distribuita con Licenza Creative Commons Attribuzione - 
+* Non commerciale - Condividi allo stesso modo 4.0 Internazionale.
+* - http://creativecommons.org/licenses/by-nc-sa/4.0/
+*/
+
 #include "gmTime.h"
+
+#include <Arduino.h>
 
 Time::Time() {
   this->_s = 0;
@@ -10,7 +18,7 @@ void Time::fromSeconds(int s) {
   this->_h = s/3600;
   s = s-_h*3600;
   this->_m = s/60;
-  s = s-_h*60;
+  s = s-_m*60;
   this->_s = s;
 }
 
@@ -21,12 +29,14 @@ int Time::toSeconds() {
 void Time::incSeconds(int s) {
   int curr = this->toSeconds();
   int next = curr+s;
+  if(next>=3*3600) next = (3600*3)-1;
   this->fromSeconds(next);
 }
 
 void Time::decSeconds(int s) {
   int curr = this->toSeconds();
-  int next = curr-s;
+  int next = 0;
+  if(curr>s) next = curr-s;
   this->fromSeconds(next);
 }
 

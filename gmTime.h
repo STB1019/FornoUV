@@ -1,3 +1,9 @@
+/**
+* Quest'opera è distribuita con Licenza Creative Commons Attribuzione - 
+* Non commerciale - Condividi allo stesso modo 4.0 Internazionale.
+* - http://creativecommons.org/licenses/by-nc-sa/4.0/
+*/
+
 #ifndef gmTIME_h
 #define gmTIME_h
 

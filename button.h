@@ -1,3 +1,9 @@
+/**
+* Quest'opera è distribuita con Licenza Creative Commons Attribuzione - 
+* Non commerciale - Condividi allo stesso modo 4.0 Internazionale.
+* - http://creativecommons.org/licenses/by-nc-sa/4.0/
+*/
+
 #ifndef BUTTON_h
 #define BUTTON_h
 
@@ -10,7 +16,7 @@ typedef struct {
   volatile unsigned char* _ppin;//bellissimo
 }Button;
 
-Button btnCreate(volatile unsigned char* ppin, int pin) {
+Button btnCreate(volatile unsigned char* ppin, char pin) {
   Button btnOne = {false,false,false,0,pin,ppin};
   return btnOne;
 }
