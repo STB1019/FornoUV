@@ -1,9 +1,3 @@
-/**
-* Quest'opera è distribuita con Licenza Creative Commons Attribuzione - 
-* Non commerciale - Condividi allo stesso modo 4.0 Internazionale.
-* - http://creativecommons.org/licenses/by-nc-sa/4.0/
-*/
-
 /*****
  * 
  * PIN:
@@ -11,12 +5,6 @@
  * 
  * -53 BtnStart
  * -52 BtnStop
- * 
- * -51 Time+
- * -50 Time-
- * 
- * -49 LedVerde
- * -48 Led Rosso
  * 
  * -36 MOTOR_CW
  * -37 MOTOR_CCW
@@ -30,6 +18,12 @@
  * -22 SERVOMOTOR
  * 
  * -43 BtnServo
+ * -51 Time+
+ * -50 Time-
+ * 
+ * -49 LedVerde
+ * -48 Led Rosso
+ * 
  * 
  * -42 Input DHT11
  */
@@ -40,9 +34,9 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 #include <Servo.h>
 Servo servo;
 
-#include <Adafruit_Sensor.h>
+#include <AdafruitSensor.h>
 #include <DHT.h>
-#include <DHT_U.h>
+#include <DHTU.h>
 #define DHTPIN            42 
 #define DHTTYPE           DHT11    
 DHT_Unified dht(DHTPIN, DHTTYPE);
@@ -65,6 +59,27 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 
 #define MOTOR_CW 36
 #define MOTOR_CCW 37
+
+
+
+void state_base();
+void state_start();
+void state_work();
+void state_stop();
+void state_time();
+void state_time_up();
+void state_time_down();
+void motor_On();
+void motor_Off();
+void change_state(int new_state);
+void update_time();
+void resistor_on();
+void resistor_off();
+void fan_on();
+void fan_off();
+void UV_on();
+void UV_off();
+
 
 int servo_angle;
 int program_state;
@@ -282,14 +297,14 @@ void state_start() {
     two_seconds_flag = false;
     cnt_seconds_flag = 0;
     ta = millis();
-    motorCW(); 
+    motor_on(); 
     UV_on();
   }
 }
 
 void state_work() {
   if(!btnServo._signal) {
-    UV_off();
+    //UV_off();
     change_state(STATE_STOP);
   }
   update_time();
@@ -318,13 +333,16 @@ void state_work() {
     one_seconds_flag = false;
   }
   if ((_seconds == objTimeOne.toSeconds()) || btnStop._signal) {
-    UV_off();
+    //UV_off();
     change_state((int)STATE_STOP);
   }
 }
 
 void state_stop() {
-  motorStop();
+  motor_off();
+  fan_off();
+  resistor_off();
+  UV_off();
   if(servo_angle>=0) servo_angle -= 1;
   servo.write(servo_angle);
   delay(20);
@@ -376,13 +394,12 @@ void state_time_down() {
 }
 
 
-void motorCW() {
+void motor_on() {
   digitalWrite(MOTOR_CW,HIGH);
+  digitalWrite(MOTOR_CCW,LOW);
+  
 }
-void motorCCW() {
-  digitalWrite(MOTOR_CCW,HIGH);
-}
-void motorStop(){
+void motor_off(){
   digitalWrite(MOTOR_CW,LOW);
   digitalWrite(MOTOR_CCW,LOW);
 }
@@ -414,19 +431,19 @@ void resistor_off() {
 }
 
 void fan_on() {
-  PORTC |= B00000010;  
+  digitalWrite(31,HIGH); 
 }
 
 void fan_off() {
-  PORTC &= ~(B00000010);  
+  digitalWrite(31,LOW);  
 }
 
 void UV_on() {
-  PORTC |= B00000001;  
+  digitalWrite(30,HIGH); 
 }
 
 void UV_off() {
-  PORTC &= ~(B00000001);  
+  digitalWrite(30,LOW);   
 }
 
 
