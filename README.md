@@ -1,6 +1,6 @@
 # FornoUV
 
-## Dependancies
+## Dependencies
 [Adafruit Sensor](https://github.com/adafruit/Adafruit_Sensor)
 
 ## Description
