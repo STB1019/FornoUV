@@ -34,6 +34,7 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 #include <Servo.h>
 Servo servo;
 
+// libraried used for the humidity and temperature sensors (see https://github.com/adafruit/DHT-sensor-library and https://github.com/adafruit/Adafruit_Sensor)
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
@@ -92,13 +93,12 @@ bool serial_flag;
 bool one_seconds_flag;
 bool two_seconds_flag;
 int cnt_seconds_flag;
-
+    
 Time objTimeOne,objTimeTwo;
 Button btnStart, btnStop, btnTimeUp, btnTimeDown, btnServo;
 
 
 void setup() {
-
   /*
     PORTB
     PB0 PB1 PB2 PB3 PB4 PB5 PB6 PB7
@@ -123,6 +123,7 @@ void setup() {
   DDRC  =  B11111111;
   PORTC =  B00000000;
 
+  // creates the buttons
   btnStart = btnCreate(&PINB, PB0);
   btnStop = btnCreate(&PINB, PB1);
   btnTimeUp = btnCreate(&PINB, PB2);
