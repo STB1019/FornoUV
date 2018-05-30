@@ -20,7 +20,9 @@ From the base state, pressing the BTNSTART it starts the work. The servomotor se
 
 ### State Machine
 
-![state machine](https://github.com/STB1019/FornoUV/tree/master/images/state%20machine%20-%20FornoUV.png "State Machine")
+![State Machine](https://raw.githubusercontent.com/STB1019/FornoUV/master/images/state%20machine%20-%20FornoUV.png)
+
+![State Machine file](https://github.com/STB1019/FornoUV/tree/master/images/state%20machine%20-%20FornoUV.png "State Machine")
 
 ### Pin Connections
 
@@ -41,7 +43,10 @@ Pin | Use | Relè Connections
 
 ### Relè
 
-![rele](https://github.com/STB1019/FornoUV/tree/master/images/rele%20image%20-%20FornoUV.png "Rele")
+![Relè](https://raw.githubusercontent.com/STB1019/FornoUV/master/images/rele%20image%20-%20FornoUV.png)
+
+![Relè file](https://github.com/STB1019/FornoUV/tree/master/images/rele%20image%20-%20FornoUV.png "Rele")
+
 
 NC:    NORMALLY CLOSED    →    ALL TO GROUND  
 C:     COMMON  
