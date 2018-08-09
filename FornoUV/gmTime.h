@@ -1,6 +1,9 @@
 #ifndef gmTIME_h
 #define gmTIME_h
 
+/**
+ * Represents a time interval
+ */
 class Time {
 
   public:
@@ -13,13 +16,13 @@ class Time {
     char* toStringHMS();
     bool lessEqual(int h, int m, int s);
     bool aboveEqual(int h, int m, int s);
-    
+
   private:
     int _s;
     int _m;
     int _h;
     char _str[16];
-  
+
 };
 
 
