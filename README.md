@@ -28,7 +28,7 @@ From the base state, pressing the BTNSTART it starts the work. The servomotor se
 
 Pin | Use | Relè Connections
 --- | --- | ----------------
-8, 9, 4, 5, 6 | LCD | 
+8, 9, 4, 5, 6, 7 | LCD | 
 51, 50 | BTNTIME+, BTNTIME- | 
 49, 48 | Green LED, Red LED | 
 36, 37 | Motor CW, Motor CCW | IN1, IN2
