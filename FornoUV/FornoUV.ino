@@ -1,11 +1,11 @@
 /*****
- * 
+ *
  * PIN:
  * - 8,9,4,5,6,7 LCD
- * 
+ *
  * -53 BtnStart
  * -52 BtnStop
- * 
+ *
  * -36 MOTOR_CW
  * -37 MOTOR_CCW
  * -35 Resistenza scalda
@@ -14,17 +14,17 @@
  * -32 Resistenza scalda
  * -31 Ventola
  * -30 UVLED
- * 
+ *
  * -22 SERVOMOTOR
- * 
+ *
  * -43 BtnServo
  * -51 Time+
  * -50 Time-
- * 
+ *
  * -49 LedVerde
  * -48 Led Rosso
- * 
- * 
+ *
+ *
  * -42 Input DHT11
  */
 
@@ -39,8 +39,8 @@ Servo servo;
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN            42 
-#define DHTTYPE           DHT11    
+#define DHTPIN            42
+#define DHTTYPE           DHT11
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 
@@ -56,45 +56,214 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 #define STATE_TIME_DOWN 6
 
 
-#define TINF 25
-#define TSUP 55
+#define TINF 25 // Temperatura INFeriore
+#define TSUP 55 // Temperature SUPeriore
 
-#define MOTOR_CW 36
-#define MOTOR_CCW 37
+#define MOTOR_CW 36 // pin for the motor (clockwise rotation)
+#define MOTOR_CCW 37 // pin for the motor (counter-clockwise rotation)
 
 
-
+/**
+ * Handles the BASE state of the state-machine
+ *
+ * Changes the state to:
+ * - START if (BTNSTART is pressed) AND (BTNSTOP is released) AND (the time of OBJTIMEONE > 0)
+ * - TIME if (BTNTIME+ is pressed) OR (BTNTIME- is pressed)
+ */
 void state_base();
+
+/**
+ * Handles the START state of the state-machine
+ *
+ * Increases the angle of the servo by 1 degree until it reaches 91 degrees
+ * If the servo is closed, then the signal for BTNSERVO will be true, therefore changing the state
+ * Changes the state to:
+ * - WORK if (BTNSERVO is pressed)
+ *   -> resets all of the values used for update_time()
+ *   -> starts the motor and the UV
+ */
 void state_start();
+
+/**
+ * Handles the WORK state of the state machine
+ *
+ * Every two seconds, it checks the temperature in order to keep it right
+ * Every second, it updates the value of objTimeTwo, which stores the remaining time
+ * Changes the state to:
+ *  - STOP if (BTNSERVO is released) -> i.e. the door is opened
+ *  - STOP if (the time reaches the limit) OR (BTNSTOP is pressed)
+ */
 void state_work();
+
+/**
+ * Turns everything off (motor, UV, resistor and fan) and proceeds to open the servo to unlock the door
+ * Once the door opens (BTNSERVO returning false), it changes state accordingly
+ * Changes the state to:
+ *  - BASE if (BTNSERVO is released) -> i.e. the door is opened
+ */
 void state_stop();
+
+/**
+ * First get here by pressing BTNTIME+ or BTNTIME-
+ * Then, pressing and holding BTNTIME+ xor BTNTIME- will increase/decrease the time by a speeding amount of seconds
+ * Instead, pressing BTNTIME+ xor BTNTIME- for less than one second, the time will increase/decrease by 1 minute
+ * Changes the state to:
+ *  - TIME+ if (BTNTIME+ is pressed) AND (BTNTIME- is released)
+ *  - TIME- if (BTNTIME- is pressed) AND (BTNTIME+ is released)
+ *  - BASE if (BTNSTART is pressed and then released) -> this is represented in the diagram with the virtual state WAIT, not actually implemented here
+ */
 void state_time();
+
+/**
+ * Allows the user to increase the time, as explained in state_time()
+ * Changes the state to:
+ *  - TIME if (BTNTIME+ is released)
+ */
 void state_time_up();
+
+/**
+ * Allows the user to decrease the time, as explained in state_time()
+ * Changes the state to:
+ *  - TIME if (BTNTIME- is released)
+ */
 void state_time_down();
-void motor_On();
-void motor_Off();
+
+
+
+/**
+ * Turns on the motor that spins the plate in the oven
+ */
+void motor_on();
+
+/**
+ * Turns off the motor that spins the plate in the oven
+ */
+void motor_off();
+
+/**
+ * Updates the state of the state machine to a new one
+ * @param new_state The new state of the machine
+ */
 void change_state(int new_state);
+
+/**
+ * SUGGESTION: this should be a class (or a struct) of its own: it uses 5 global variables and a function: why not make it an object or a struct?
+ *
+ * Uses or updates the global variables ta, _seconds, one_seconds_flag, two_seconds_flag and cnt_seconds_flag,
+ * in order to keep a timer (or interval).
+ * To start the timer, set:
+ *   ta = millis();
+ *   _seconds = 0;
+ *   one_seconds_flag = false;
+ *   two_seconds_flag = false;
+ *   cnt_seconds_flag = 0;
+ * The values of these global variables will be modified:
+ *  - _seconds: it will contain the number of seconds passed since starting the interval
+ *  - one_seconds_flag: this becomes true every single second. (this must be reset to false once it has been found true)
+ *  - two_seconds_flag: this becomes true once evry two second. (this must be reset to false once it has been found true)
+ */
 void update_time();
+
+/**
+ * Turns on the resistor that heats the oven
+ */
 void resistor_on();
+
+/**
+ * Turns off the resistor that heats the oven
+ */
 void resistor_off();
+
+/**
+ * Turns on the fan that makes the air circulate and cools the oven
+ */
 void fan_on();
+
+/**
+ * Turns off the fan that makes the air circulate and cools the oven
+ */
 void fan_off();
+
+/**
+ * Turns on the ultraviolet leds used in the heating and curing process
+ */
 void UV_on();
+
+/**
+ * Turns on the ultraviolet leds used in the heating and curing process
+ */
 void UV_off();
 
 
+/**
+ * Stores the angle of the servo motor.
+ * The servo motor will then be rotated using "servo.write(servo_angle)"
+ */
 int servo_angle;
+
+/**
+ * Stores the current state of the program
+ */
 int program_state;
 
+/**
+ * WARNING: this will break and never stop if the interval lasts more than about 49 days (= 2^32 milliseconds)
+ *
+ * Marks a certain point in time using millis()
+ * This will be used within update_time() to update the value of _seconds to the amount of seconds
+ * passed since the start of the interval
+ */
 long ta;
+
+/**
+ * Stores the amount of seconds since the start of an interval, marked by assigning
+ * the return value of millis() to the variable ta
+ */
 int _seconds;
 
+/**
+ * Simple flag used for debug
+ * It allowed for the current state of the machine to be printed on serial, before the code was commented
+ */
 bool serial_flag;
+
+/**
+ * Using update_time, this flag becomes true once every second
+ * The usage mandates setting this value back to false after it has been found true
+ */
 bool one_seconds_flag;
+
+/**
+ * Using update_time(), this flag becomes true once every two seconds
+ * Just like one_seconds_flag, the usage mandates setting this value back to false after it has been found true
+ */
 bool two_seconds_flag;
+
+/**
+ * Internal value for update_time(), counts how many seconds have passed by,
+ * in order to update the value of two_seconds_flag
+ * This variable should be set to 0 on setup and NEVER be modified
+ */
 int cnt_seconds_flag;
-    
-Time objTimeOne,objTimeTwo;
+
+/**
+ * Time object, used to store the total amount of time required for the current/upcoming job
+ */
+Time objTimeOne,
+
+/**
+ * Time object, it is updated inside state_work() to contain the amount of time remaining to the end of the job
+ */
+Time objTimeTwo;
+
+/**
+ * Five instances of the struct Button, representing various buttons or sensor in the machine:
+ * - btnStart: represents the START button, used for example to begin the curing process
+ * - btnStop: represents the STOP button, used to stop the ongoing curing process
+ * - btnTimeUp: represents the TIME UP button, used to increase the necessary time for the upcoming curing process
+ * - btnTimeDown: represents the TIME UP button, used to decrease the necessary time for the upcoming curing process
+ * - btnServo: not actually a button, this instance represents a sensor, used to detect if the door of the oven is open
+ */
 Button btnStart, btnStop, btnTimeUp, btnTimeDown, btnServo;
 
 
@@ -129,7 +298,7 @@ void setup() {
   btnTimeUp = btnCreate(&PINB, PB2);
   btnTimeDown = btnCreate(&PINB, PB3);
   btnServo = btnCreate(&PINL, PL6);
-  
+
   objTimeOne = Time();
   objTimeTwo = Time();
 
@@ -140,7 +309,7 @@ void setup() {
   cnt_seconds_flag = 0;
 
   _seconds = 0;
-  
+
   change_state((int)STATE_BASE);
 
   lcd.begin(16, 2);
@@ -166,7 +335,7 @@ void setup() {
   //Serial.print  ("Unique ID:    "); //Serial.println(sensor.sensor_id);
   //Serial.print  ("Max Value:    "); //Serial.print(sensor.max_value); //Serial.println(" *C");
   //Serial.print  ("Min Value:    "); //Serial.print(sensor.min_value); //Serial.println(" *C");
-  //Serial.print  ("Resolution:   "); //Serial.print(sensor.resolution); //Serial.println(" *C");  
+  //Serial.print  ("Resolution:   "); //Serial.print(sensor.resolution); //Serial.println(" *C");
   //Serial.println("------------------------------------");
   dht.humidity().getSensor(&sensor);
   //Serial.println("------------------------------------");
@@ -176,12 +345,12 @@ void setup() {
   //Serial.print  ("Unique ID:    "); //Serial.println(sensor.sensor_id);
   //Serial.print  ("Max Value:    "); //Serial.print(sensor.max_value); //Serial.println("%");
   //Serial.print  ("Min Value:    "); //Serial.print(sensor.min_value); //Serial.println("%");
-  //Serial.print  ("Resolution:   "); //Serial.print(sensor.resolution); //Serial.println("%");  
+  //Serial.print  ("Resolution:   "); //Serial.print(sensor.resolution); //Serial.println("%");
   //Serial.println("------------------------------------");
 }
 
 void loop() {
-  
+
   btnUpdate(&btnStart);
   btnUpdate(&btnStop);
   btnUpdate(&btnTimeUp);
@@ -276,30 +445,31 @@ void loop() {
 
 
 void state_base() {
-  
+
   if (btnStart._signal && !btnStop._signal) {
     if (objTimeOne.toSeconds() > 0) change_state((int)STATE_START);
   }
-  
+
   if (btnTimeUp._signal || btnTimeDown._signal) {
     change_state((int)STATE_TIME);
   }
-  
+
 }
+
 
 void state_start() {
   if(servo_angle<=90) servo_angle += 1;
   servo.write(servo_angle);
   delay(20);
   if(btnServo._signal) {
-    PORTL ^= 3;
+    PORTL ^= 3; // ???
     change_state(STATE_WORK);
     _seconds = 0;
     one_seconds_flag = false;
     two_seconds_flag = false;
     cnt_seconds_flag = 0;
     ta = millis();
-    motor_on(); 
+    motor_on();
     UV_on();
   }
 }
@@ -318,14 +488,14 @@ void state_work() {
       if(event.temperature<TINF) {
         resistor_on();
         fan_off();
-      }else if(event.temperature>TSUP) {
+      } else if(event.temperature>TSUP) {
         resistor_off();
         fan_on();
       } else {
         resistor_off();
         fan_off();
       }
-        
+
     }
     two_seconds_flag = false;
   }
@@ -365,8 +535,8 @@ void state_time() {
     }
     if (btnTimeDown._signal) {
       change_state((int)STATE_TIME_DOWN);
-      _seconds = 0; 
-      ta = millis(); 
+      _seconds = 0;
+      ta = millis();
     }
   }
   if (btnStart._signal) {
@@ -378,34 +548,55 @@ void state_time() {
 
 void state_time_up() {
   update_time();
-  int up_s = min(pow(_seconds + 1, 2),30);
-  if(up_s>1)objTimeOne.incSeconds(up_s);
+  /*
+    seems to be growing quite rapidly: after holding the button for:
+    0s: nothing          -> tot:  0
+    1s: increase by 4s   -> tot:  4
+    2s: increase by 9s   -> tot: 13
+    3s: increase by 16s  -> tot: 29
+    4s: increase by 25s  -> tot: 54
+    5+s: increase by 30s -> tot: 84, 114, 144...
+   */
+  int up_s = min(pow(_seconds + 1, 2),30); // looks quite inefficient to calculate a power even if we know it will be greater than 30...
+  if (up_s > 1) objTimeOne.incSeconds(up_s);
   if (!btnTimeUp._signal) {
-    if(up_s<=1)objTimeOne.incSeconds(up_s*60);
+    if (up_s <= 1) objTimeOne.incSeconds(up_s*60); // why not just 60?
     change_state((int)STATE_TIME);
   }
 }
 void state_time_down() {
   update_time();
-  int dw_s = min(pow(_seconds + 1, 2),30);
-  if(dw_s>1) objTimeOne.decSeconds(dw_s);
+  int dw_s = min(pow(_seconds + 1, 2), 30);
+  if (dw_s > 1) objTimeOne.decSeconds(dw_s);
   if (!btnTimeDown._signal) {
-    if(dw_s<=1) objTimeOne.decSeconds(dw_s*60);
+    if (dw_s <= 1) objTimeOne.decSeconds(dw_s * 60);
     change_state((int)STATE_TIME);
   }
 }
 
 
+
+
+/**
+ * Writes whatever pins it needs to turn the motor on
+ */
 void motor_on() {
   digitalWrite(MOTOR_CW,HIGH);
   digitalWrite(MOTOR_CCW,LOW);
-  
+
 }
+/**
+ * Writes whatever pins it needs to turn the motor off
+ */
 void motor_off(){
   digitalWrite(MOTOR_CW,LOW);
   digitalWrite(MOTOR_CCW,LOW);
 }
 
+/**
+ * Changes the state of the program to a new one
+ * @param new_state
+ */
 void change_state(int new_state) {
   program_state = new_state;
   serial_flag = true;
@@ -420,32 +611,30 @@ void update_time(){
   }
   if(cnt_seconds_flag == 2){
     two_seconds_flag = true;
-    cnt_seconds_flag = 0;  
+    cnt_seconds_flag = 0;
   }
 }
 
 void resistor_on() {
-  PORTC |= B00111100;  
+  PORTC |= B00111100;
 }
 
 void resistor_off() {
-  PORTC &= ~(B00111100);  
+  PORTC &= ~(B00111100);
 }
 
 void fan_on() {
-  digitalWrite(31,HIGH); 
+  digitalWrite(31,HIGH);
 }
 
 void fan_off() {
-  digitalWrite(31,LOW);  
+  digitalWrite(31,LOW);
 }
 
 void UV_on() {
-  digitalWrite(30,HIGH); 
+  digitalWrite(30,HIGH);
 }
 
 void UV_off() {
-  digitalWrite(30,LOW);   
+  digitalWrite(30,LOW);
 }
-
-
