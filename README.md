@@ -55,3 +55,8 @@ NO:    NORMALLY OPENED    →    APPROPRIATE SUPPLY (engine -> 12V, …)
 ### Notes
 
 The buttons have a pull up resistance inside to Arduino, so they have to be closed to ground.
+
+
+## Ideas and Improvements
+
+* Change the selection of the time, implementing an interface to choose indipendently the number of hours, minutes and seconds
