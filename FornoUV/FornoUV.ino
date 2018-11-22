@@ -28,10 +28,19 @@
  * -42 Input DHT11
  */
 
+#define FAN_PIN 31
+#define UVLED_PIN 30
+
+#define RESISTOR_1_PIN 32
+#define RESISTOR_2_PIN 33
+#define RESISTOR_3_PIN 34
+#define RESISTOR_4_PIN 35
+
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 #include <Servo.h>
+#define SERVO_PIN 3
 Servo servo;
 
 // libraried used for the humidity and temperature sensors (see https://github.com/adafruit/DHT-sensor-library and https://github.com/adafruit/Adafruit_Sensor)
@@ -249,7 +258,7 @@ int cnt_seconds_flag;
 /**
  * Time object, used to store the total amount of time required for the current/upcoming job
  */
-Time objTimeOne,
+Time objTimeOne;
 
 /**
  * Time object, it is updated inside state_work() to contain the amount of time remaining to the end of the job
@@ -285,7 +294,7 @@ void setup() {
   PORTL = B01000010;
 
   /*
-    PORTL
+    PORTC
     PC0 PC1 PC2 PC3 PC4 PC5 PC6 PC7
      37  36  35  34  33  32  31  30
   */
@@ -318,7 +327,7 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("STATE: BASE");
 
-  servo.attach(22);
+  servo.attach(SERVO_PIN);
   servo.write(servo_angle);
   //Serial.begin(9600);
   //while(!Serial) continue;
@@ -624,17 +633,17 @@ void resistor_off() {
 }
 
 void fan_on() {
-  digitalWrite(31,HIGH);
+  digitalWrite(FAN_PIN,HIGH);
 }
 
 void fan_off() {
-  digitalWrite(31,LOW);
+  digitalWrite(FAN_PIN,LOW);
 }
 
 void UV_on() {
-  digitalWrite(30,HIGH);
+  digitalWrite(UVLED_PIN,HIGH);
 }
 
 void UV_off() {
-  digitalWrite(30,LOW);
+  digitalWrite(UVLED_PIN,LOW);
 }
