@@ -273,7 +273,11 @@ Time objTimeTwo;
  * - btnTimeDown: represents the TIME UP button, used to decrease the necessary time for the upcoming curing process
  * - btnServo: not actually a button, this instance represents a sensor, used to detect if the door of the oven is open
  */
-Button btnStart, btnStop, btnTimeUp, btnTimeDown, btnServo;
+Button btnStart(&PINB, PB0);
+Button btnStop(&PINB, PB1);
+Button btnTimeUp(&PINB, PB2);
+Button btnTimeDown(&PINB, PB3);
+Button btnServo(&PINL, PL6);
 
 
 void setup() {
@@ -301,13 +305,14 @@ void setup() {
   DDRC  =  B11111111;
   PORTC =  B00000000;
 
+/*
   // creates the buttons
   btnStart = btnCreate(&PINB, PB0);
   btnStop = btnCreate(&PINB, PB1);
   btnTimeUp = btnCreate(&PINB, PB2);
   btnTimeDown = btnCreate(&PINB, PB3);
   btnServo = btnCreate(&PINL, PL6);
-
+*/
   objTimeOne = Time();
   objTimeTwo = Time();
 
@@ -360,11 +365,11 @@ void setup() {
 
 void loop() {
 
-  btnUpdate(&btnStart);
-  btnUpdate(&btnStop);
-  btnUpdate(&btnTimeUp);
-  btnUpdate(&btnTimeDown);
-  btnUpdate(&btnServo);
+  btnStart.update();
+  btnStop.update();
+  btnTimeUp.update();
+  btnTimeDown.update();
+  btnServo.update();
 
   switch (program_state) {
     case STATE_BASE:
@@ -455,11 +460,11 @@ void loop() {
 
 void state_base() {
 
-  if (btnStart._signal && !btnStop._signal) {
+  if (btnStart.isPressed() && !btnStop.isPressed()) {
     if (objTimeOne.toSeconds() > 0) change_state((int)STATE_START);
   }
 
-  if (btnTimeUp._signal || btnTimeDown._signal) {
+  if (btnTimeUp.isPressed() || btnTimeDown.isPressed()) {
     change_state((int)STATE_TIME);
   }
 
@@ -470,7 +475,7 @@ void state_start() {
   if(servo_angle<=90) servo_angle += 1;
   servo.write(servo_angle);
   delay(20);
-  if(btnServo._signal) {
+  if(btnServo.isPressed()) {
     PORTL ^= 3; // ???
     change_state(STATE_WORK);
     _seconds = 0;
@@ -484,7 +489,7 @@ void state_start() {
 }
 
 void state_work() {
-  if(!btnServo._signal) {
+  if(!btnServo.isPressed()) {
     //UV_off();
     change_state(STATE_STOP);
   }
@@ -513,7 +518,7 @@ void state_work() {
     objTimeTwo.decSeconds(_seconds);
     one_seconds_flag = false;
   }
-  if ((_seconds == objTimeOne.toSeconds()) || btnStop._signal) {
+  if ((_seconds == objTimeOne.toSeconds()) || btnStop.isPressed()) {
     //UV_off();
     change_state((int)STATE_STOP);
   }
@@ -527,7 +532,7 @@ void state_stop() {
   if(servo_angle>=0) servo_angle -= 1;
   servo.write(servo_angle);
   delay(20);
-  if(!btnServo._signal) {
+  if(!btnServo.isPressed()) {
     servo.write(0);
     PORTL ^= 3;
     change_state(STATE_BASE);
@@ -535,22 +540,22 @@ void state_stop() {
 }
 
 void state_time() {
-  if (btnTimeUp._signal && btnTimeDown._signal) return;
+  if (btnTimeUp.isPressed() && btnTimeDown.isPressed()) return;
   else {
-    if (btnTimeUp._signal) {
+    if (btnTimeUp.isPressed()) {
       change_state((int)STATE_TIME_UP);
       _seconds = 0;
       ta = millis();
     }
-    if (btnTimeDown._signal) {
+    if (btnTimeDown.isPressed()) {
       change_state((int)STATE_TIME_DOWN);
       _seconds = 0;
       ta = millis();
     }
   }
-  if (btnStart._signal) {
+  if (btnStart.isPressed()) {
     change_state((int)STATE_BASE);
-    while (btnStart._signal) btnUpdate(&btnStart);
+    while (btnStart.isPressed()) btnStart.update();
   }
 }
 
@@ -568,7 +573,7 @@ void state_time_up() {
    */
   int up_s = min(pow(_seconds + 1, 2),30); // looks quite inefficient to calculate a power even if we know it will be greater than 30...
   if (up_s > 1) objTimeOne.incSeconds(up_s);
-  if (!btnTimeUp._signal) {
+  if (!btnTimeUp.isPressed()) {
     if (up_s <= 1) objTimeOne.incSeconds(up_s*60); // why not just 60?
     change_state((int)STATE_TIME);
   }
@@ -577,7 +582,7 @@ void state_time_down() {
   update_time();
   int dw_s = min(pow(_seconds + 1, 2), 30);
   if (dw_s > 1) objTimeOne.decSeconds(dw_s);
-  if (!btnTimeDown._signal) {
+  if (!btnTimeDown.isPressed()) {
     if (dw_s <= 1) objTimeOne.decSeconds(dw_s * 60);
     change_state((int)STATE_TIME);
   }
