@@ -4,20 +4,22 @@
 #include <Arduino.h>
 #include "State.h"
 
+#include "State_Confirm.h"
+#include "State_TempSet.h"
+#include "State_TimeSet.h"
+
 class State_Idle : public State {
-    public:
-        State_Idle();
-        ~State_Idle();
-        State* execute(State* prevState);
-    protected:
-        void printLCD();
-    private:
-
+public:
+    State_Idle();
+    ~State_Idle();
+    State* execute(State* prevState);
+protected:
+    void printLCD();
+private:
+    State_Idle(int sel);
+    State_Idle(State_Idle* state);
+    // 0 -> time, 1 -> temp, 2 -> start
+    int _selected = 0;
 };
-
-
-
-
-
 
 #endif
