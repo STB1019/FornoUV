@@ -2,7 +2,7 @@
 #define STATE_CONFIRM_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_Confirm : public State {
     public:

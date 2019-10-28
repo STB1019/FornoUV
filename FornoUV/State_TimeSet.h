@@ -2,7 +2,7 @@
 #define STATE_TIMESET_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_TimeSet : public State {
     public:

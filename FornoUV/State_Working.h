@@ -2,7 +2,7 @@
 #define STATE_WORKING_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_Working : public State {
     public:

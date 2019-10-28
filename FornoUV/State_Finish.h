@@ -2,7 +2,7 @@
 #define STATE_FINISH_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_Finish : public State {
     public:

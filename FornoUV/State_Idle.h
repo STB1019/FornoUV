@@ -2,7 +2,7 @@
 #define STATE_IDLE_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_Idle : public State {
     public:

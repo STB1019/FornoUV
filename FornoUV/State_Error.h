@@ -2,7 +2,7 @@
 #define STATE_ERROR_H
 
 #include <Arduino.h>
-#include "State.h";
+#include "State.h"
 
 class State_Error : public State {
     public:
