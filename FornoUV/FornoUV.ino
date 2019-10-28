@@ -4,18 +4,18 @@
 #include "Time.h"
 #include "Timer.h"
 
-#include "State.h";
+#include "State.h"
 #include "State_Confirm.h"
 #include "State_Error.h"
 #include "State_Finish.h"
-#include "State_Idle.h";
+#include "State_Idle.h"
 #include "State_Preparation.h"
 #include "State_Ready.h"
 #include "State_TempSet.h"
 #include "State_TimeSet.h"
 #include "State_Working.h"
 
-#include "WorkingSet.h";
+#include "WorkingSet.h"
 
 
 State* prev;
