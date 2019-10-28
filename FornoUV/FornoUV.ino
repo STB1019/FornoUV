@@ -1,7 +1,5 @@
 #include <LiquidCrystal.h>
 #include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
 
 #include "Time.h"
 #include "Timer.h"
