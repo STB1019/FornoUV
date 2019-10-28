@@ -2,7 +2,7 @@
 
 // public
 State_Finish::State_Finish() {
-
+    setStateId(STATE_ID_FINISH);
 }
 State_Finish::~State_Finish() {
 

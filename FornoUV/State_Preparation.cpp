@@ -2,7 +2,7 @@
 
 // public
 State_Preparation::State_Preparation() {
-
+    setStateId(STATE_ID_PREPARATION);
 }
 State_Preparation::~State_Preparation() {
 

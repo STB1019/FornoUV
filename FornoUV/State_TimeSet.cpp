@@ -2,7 +2,7 @@
 
 // public
 State_TimeSet::State_TimeSet() {
-
+    setStateId(STATE_ID_TIMESET);
 }
 State_TimeSet::~State_TimeSet() {
 

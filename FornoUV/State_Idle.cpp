@@ -2,7 +2,7 @@
 
 // public
 State_Idle::State_Idle() {
-
+    setStateId(STATE_ID_IDLE);
 }
 State_Idle::~State_Idle() {
 
