@@ -2,7 +2,7 @@
 
 // public
 State_Confirm::State_Confirm() {
-
+    setStateId(STATE_ID_CONFIRM);
 }
 State_Confirm::~State_Confirm() {
 

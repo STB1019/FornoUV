@@ -2,7 +2,7 @@
 
 // public
 State_Ready::State_Ready() {
-
+    setStateId(STATE_ID_READY);
 }
 State_Ready::~State_Ready() {
 

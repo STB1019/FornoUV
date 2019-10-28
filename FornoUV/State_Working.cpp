@@ -2,7 +2,7 @@
 
 // public
 State_Working::State_Working() {
-
+    setStateId(STATE_ID_WORKING);
 }
 State_Working::~State_Working() {
 

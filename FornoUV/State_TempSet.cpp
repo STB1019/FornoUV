@@ -2,7 +2,7 @@
 
 // public
 State_TempSet::State_TempSet() {
-
+    setStateId(STATE_ID_TEMPSET);
 }
 State_TempSet::~State_TempSet() {
 

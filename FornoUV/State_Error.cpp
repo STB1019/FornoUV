@@ -2,7 +2,7 @@
 
 // public
 State_Error::State_Error() {
-
+    setStateId(STATE_ID_ERROR);
 }
 State_Error::~State_Error() {
 
