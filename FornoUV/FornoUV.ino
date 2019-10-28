@@ -4,10 +4,10 @@
 #include "Time.h"
 #include "Timer.h"
 
-#include "State.h";
-#include "State_Idle.h";
+#include "State.h"
+#include "State_Idle.h"
 
-#include "WorkingSet.h";
+#include "WorkingSet.h"
 
 
 State* prev;
