@@ -6,6 +6,29 @@
 #include "Time.h"
 #include "Timer.h"
 
+#include "State.h";
+#include "State_Idle.h";
+
+#include "WorkingSet.h";
+
+
+State* prev;
+State* curr;
+
+void setup() {
+    curr = new State_Idle();
+}
+
+void loop() {
+    State* next = curr->execute(prev);
+
+    delete prev;
+
+    prev = curr;
+    curr = next;
+}
+
+/*
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 DHT_Unified dht(42, DHT11);
@@ -160,3 +183,4 @@ void loop() {
 int amtheld(int x) {
   return 20 - 19 * exp(-abs(x) / 10);
 }
+*/
