@@ -1,14 +1,5 @@
 #include "State_Idle.h"
 
-public:
-    State_Idle();
-    ~State_Idle();
-    State* execute(State* prevState);
-protected:
-    void printLCD();
-private:
-
-
 // public
 State_Idle::State_Idle() {
 
