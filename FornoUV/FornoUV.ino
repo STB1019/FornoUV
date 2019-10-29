@@ -4,6 +4,9 @@
 #include "Time.h"
 #include "Timer.h"
 
+#include "WorkingSet.h"
+#include "Actuator.h";
+
 #include "State.h"
 #include "State_Confirm.h"
 #include "State_Error.h"
@@ -14,8 +17,6 @@
 #include "State_TempSet.h"
 #include "State_TimeSet.h"
 #include "State_Working.h"
-
-#include "WorkingSet.h"
 
 
 State* prev;

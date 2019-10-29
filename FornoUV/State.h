@@ -1,6 +1,9 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "Actuator.h"
+#include "WorkingSet.h"
+
 #define STATE_ID_IDLE  0
 #define STATE_ID_TIMESET  1
 #define STATE_ID_TEMPSET  2

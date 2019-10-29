@@ -6,10 +6,10 @@
 
 
 class Timer {
-  friend void loop();
-  friend void cng(Timer* t, int amt, int pos, long thresh);
-  public:
+public:
     Timer();
+    Timer(int h, int m, int s);
+    Timer(Timer* timer);
     void setTime(int h, int m, int s);
     void start();
     Time update();
@@ -23,7 +23,7 @@ class Timer {
     void pause();
     int isPaused();
     int isGoing();
-  private:
+private:
     void change(int pos, int amt);
     Time end;
     Time passed;

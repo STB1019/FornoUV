@@ -2,6 +2,15 @@
 #define WORKING_SET_H
 
 #define TEMPERATURE_SENSOR_GPIO 42
+#include <Arduino.h>
+#include "Timer.h";
+
+#define BUTTON_RIGHT  0
+#define BUTTON_UP     1
+#define BUTTON_DOWN   2
+#define BUTTON_LEFT   3
+#define BUTTON_SELECT 4
+#define BUTTON_NONE   5
 
 class WorkingSet {
     public:
@@ -14,12 +23,18 @@ class WorkingSet {
         bool getLedUV();
         bool getMotor();
         bool getFan();
+        int getButton();
 
         /* SENSORS DATA */
         void readLimitSwitch();
         void readTemperature();
         bool getLimitSwitch();
         float getTemperature();
+
+
+        /* OTHER STUFF */
+        Timer* getTimer();
+        void setTimer(Timer* timer);
     private:
         friend class Actuator;
         static WorkingSet* _instance;
@@ -31,6 +46,7 @@ class WorkingSet {
         bool _fanStatus;
         bool _limitSwitchStatus;
         float _temperature;
+        Timer* _timer;
         WorkingSet();
 
         /* DEVICE STATUS */
@@ -41,6 +57,5 @@ class WorkingSet {
         void setMotor(bool status);
         void setFan(bool status);
 };
-
 
 #endif
