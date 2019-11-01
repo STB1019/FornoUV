@@ -15,7 +15,7 @@ State* State_Idle::execute(State* prevState) {
     int button = ws->getButton();
 
     if (button == BUTTON_NONE)
-        return new State_Idle(this);
+        return new State_Idle(_selected);
 
     // we proceed to the state determined by _selected
     if (button == BUTTON_SELECT) {
@@ -50,9 +50,7 @@ State* State_Idle::execute(State* prevState) {
     else if (button == BUTTON_DOWN) {
         nextSel = 1;
     }
-    State_Idle* next = new State_Idle(this);
-    next->_selected = nextSel;
-    return next;
+    return new State_Idle(nextSel);
 }
 
 // protected
@@ -63,7 +61,4 @@ void State_Idle::printLCD() {
 // private
 State_Idle::State_Idle(int sel) : State_Idle::State_Idle() {
     _selected = sel;
-}
-State_Idle::State_Idle(State_Idle* state) : State_Idle::State_Idle() {
-    _selected = state->_selected;
 }

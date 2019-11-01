@@ -21,6 +21,8 @@ class State {
     protected:
         virtual void printLCD() = 0;
         void setStateId(int id);
+
+        int _selected = 0;
     private:
         int _id;
 };

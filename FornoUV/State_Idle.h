@@ -17,9 +17,9 @@ protected:
     void printLCD();
 private:
     State_Idle(int sel);
-    State_Idle(State_Idle* state);
-    // 0 -> time, 1 -> temp, 2 -> start
-    int _selected = 0;
 };
+
+// SELECTION meaning:
+// 0 -> time, 1 -> temp, 2 -> start
 
 #endif

@@ -6,6 +6,7 @@
 
 #include "State_Idle.h"
 
+
 class State_TimeSet : public State {
     public:
         State_TimeSet();
@@ -14,15 +15,11 @@ class State_TimeSet : public State {
     protected:
         void printLCD();
     private:
-        State_TimeSet(State_TimeSet* state);
-        State_TimeSet(Timer* nextTimer);
-        Timer* _nextTimer;
-
-        // 0-3: time, 4 -> ok, 5 -> cancel
-        int _selected = 0;
+        State_TimeSet(int selected);
 };
 
-
+// SELECTION meaning:
+// 0-3: time, 4 -> ok, 5 -> cancel
 
 
 

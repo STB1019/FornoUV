@@ -34,7 +34,10 @@ class WorkingSet {
 
         /* OTHER STUFF */
         Timer* getTimer();
-        void setTimer(Timer* timer);
+        void setTempTimer();
+        Timer* getTempTimer();
+        void confirmTempTimer();
+        void rejectTempTimer();
     private:
         friend class Actuator;
         static WorkingSet* _instance;
@@ -47,6 +50,7 @@ class WorkingSet {
         bool _limitSwitchStatus;
         float _temperature;
         Timer* _timer;
+        Timer* _tempTimer;
         WorkingSet();
 
         /* DEVICE STATUS */
