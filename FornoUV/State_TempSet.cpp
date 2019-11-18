@@ -61,8 +61,45 @@ State* State_TempSet::execute(State* prevState) {
 }
 
 // protected
-void State_TempSet::printLCD(LiquidCrystal lcd) {
 
+
+// |----------------|
+// |_xx°C           |
+// |>OK  >CANCEL    |
+// |----------------|
+void State_TempSet::printLCD(LiquidCrystal lcd) {
+    WorkingSet* ws = WorkingSet::getInstance();
+    int temp = (int) ws->getTempTargetTemp();
+
+    lcd.setCursor(1, 0);
+    lcd.print((temp < 10 ? "0" : "") + temp);
+    lcd.setCursor(3, 0);
+    lcd.print("°C");
+
+    lcd.setCursor(1,1);
+    lcd.print("OK");
+
+    lcd.setCursor(6, 1);
+    lcd.print("CANCEL");
+
+    int posCol = -1;
+    int posRow = -1;
+    switch (_selected) {
+        case 0: // OK
+            posCol = 0;
+            posRow = 1;
+            break;
+        case 1: // CANCEL
+            posCol = 5;
+            posRow = 1;
+            break;
+        default:
+    }
+
+    if (posCol != -1) {
+        lcd.setCursor(posCol, posRow);
+        lcd.print(">");
+    }
 }
 
 // private
