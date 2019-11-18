@@ -58,7 +58,7 @@ State* State_TimeSet::execute(State* prevState) {
             tt->incr(_selected, 1);
         }
         else if (button == BUTTON_DOWN) {
-            tt->dect(_selected, 1);
+            tt->decr(_selected, 1);
         }
     }
     return new State_TimeSet(_selected);

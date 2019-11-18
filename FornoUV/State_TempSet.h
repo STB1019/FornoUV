@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include "State.h"
 
+#include "State_Idle.h"
+
+
 class State_TempSet : public State {
     public:
         State_TempSet();
@@ -12,7 +15,7 @@ class State_TempSet : public State {
     protected:
         void printLCD();
     private:
-
+        State_TempSet(int selected);
 };
 
 

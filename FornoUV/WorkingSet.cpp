@@ -96,3 +96,19 @@ void WorkingSet::confirmTempTimer() {
 void WorkingSet::rejectTempTimer() {
     delete _tempTimer;
 }
+
+float WorkingSet::getTargetTemp() {
+    return (float) _targetTemp;
+}
+void WorkingSet::createTempTargetTemp() {
+    _tempTargetTemp = _targetTemp;
+}
+float WorkingSet::getTempTargetTemp() {
+    return _tempTargetTemp;
+}
+void WorkingSet::confirmTempTargetTemp() {
+    _targetTemp = _tempTargetTemp;
+}
+void WorkingSet::changeTempTargetTemp(int amt) {
+    _tempTargetTemp += amt;
+}

@@ -38,6 +38,12 @@ class WorkingSet {
         Timer* getTempTimer();
         void confirmTempTimer();
         void rejectTempTimer();
+
+        float getTargetTemp();
+        void createTempTargetTemp();
+        float getTempTargetTemp();
+        void confirmTempTargetTemp();
+        void changeTempTargetTemp(int amt);
     private:
         friend class Actuator;
         static WorkingSet* _instance;
@@ -51,6 +57,8 @@ class WorkingSet {
         float _temperature;
         Timer* _timer;
         Timer* _tempTimer;
+        int _targetTemp;
+        int _tempTargetTemp;
         WorkingSet();
 
         /* DEVICE STATUS */
