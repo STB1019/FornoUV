@@ -12,6 +12,8 @@
 #define BUTTON_SELECT 4
 #define BUTTON_NONE   5
 
+#define PIN_BUTTON  A0
+
 class WorkingSet {
     public:
         static WorkingSet* getInstance();
@@ -23,27 +25,30 @@ class WorkingSet {
         bool getLedUV();
         bool getMotor();
         bool getFan();
-        int getButton();
 
-        /* SENSORS DATA */
+        /* SENSORS READING */
         void readLimitSwitch();
         void readTemperature();
+        void readButton();
+
+        /* SENSORS GETTERS */
         bool getLimitSwitch();
         float getTemperature();
+        int getButton();
 
 
         /* OTHER STUFF */
         Timer* getTimer();
-        void createTempTimer();
-        Timer* getTempTimer();
-        void confirmTempTimer();
-        void rejectTempTimer();
+        void createTmpTimer();
+        Timer* getTmpTimer();
+        void confirmTmpTimer();
+        void rejectTmpTimer();
 
         float getTargetTemp();
-        void createTempTargetTemp();
-        float getTempTargetTemp();
-        void confirmTempTargetTemp();
-        void changeTempTargetTemp(int amt);
+        void createTmpTargetTemp();
+        float getTmpTargetTemp();
+        void confirmTmpTargetTemp();
+        void changeTmpTargetTemp(int amt);
     private:
         friend class Actuator;
         static WorkingSet* _instance;
@@ -53,12 +58,14 @@ class WorkingSet {
         bool _ledUVStatus;
         bool _motorStatus;
         bool _fanStatus;
+        int _button;
         bool _limitSwitchStatus;
         float _temperature;
         Timer* _timer;
         Timer* _tempTimer;
         int _targetTemp;
         int _tempTargetTemp;
+        int _buttonHeld = BUTTON_NONE;
         WorkingSet();
 
         /* DEVICE STATUS */
@@ -68,6 +75,7 @@ class WorkingSet {
         void setLedUV(bool status);
         void setMotor(bool status);
         void setFan(bool status);
+        void setButton(int status);
 };
 
 #endif

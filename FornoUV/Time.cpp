@@ -42,11 +42,6 @@ char* Time::getPrintable(const char* format) {
             case 's':
             {
                 long num = getValue(nx, this->time);
-                // Serial.print("  num vale ");
-                // Serial.print(num);
-                // Serial.print(nx);
-                // Serial.print(", con indice out ");
-                // Serial.println(o);
                 int add = numIntoStr(str, num, o, 2);
                 o += add;
                 break;

@@ -29,8 +29,12 @@ void setup() {
 }
 
 void loop() {
+    WorkingSet* ws = WorkingSet::getInstance();
+    ws->readButton();
+
+    curr->setup(prev);
+    curr->printLCD(lcd, prev);
     State* next = curr->execute(prev);
-    curr->printLCD(lcd);
 
     delete prev;
 

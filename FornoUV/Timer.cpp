@@ -59,6 +59,7 @@ void Timer::change(int pos, int amt) {
     }
 
     end.time += inc;
+    clamp(0, 360000); // 100 hours
 }
 
 int Timer::isGoing() {
@@ -66,8 +67,8 @@ int Timer::isGoing() {
 }
 
 int Timer::clamp(long low, long high) {
-    if (end.time <= low) {
-        end.time = low + 1;
+    if (end.time < low) {
+        end.time = low;
         return 1;
     }
 

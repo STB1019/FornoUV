@@ -7,6 +7,9 @@ State_Ready::State_Ready() {
 State_Ready::~State_Ready() {
 
 }
+void State_Ready::setup(State* prevState){
+    
+}
 State* State_Ready::execute(State* prevState) {
     return new State_Ready();
 }

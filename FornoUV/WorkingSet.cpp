@@ -10,6 +10,9 @@ WorkingSet* WorkingSet::getInstance() {
 }
 
 WorkingSet::WorkingSet() {
+    pinMode(PIN_BUTTON, INPUT);
+
+
     _ledGStatus = false;
     _ledYStatus = false;
     _ledRStatus = false;
@@ -21,6 +24,7 @@ WorkingSet::WorkingSet() {
     readLimitSwitch();
     readTemperature();
     _timer = new Timer(0, 15, 0); // default: 15 minutes
+    _targetTemp = 50; // default: 50°C
 }
 
 /* DEVICE STATUS */
@@ -60,9 +64,8 @@ bool WorkingSet::getMotor() {
 bool WorkingSet::getFan() {
     return _fanStatus;
 }
-int WorkingSet::getButton() {
-    return BUTTON_NONE;
-}
+
+
 
 /* SENSORS DATA */
 void WorkingSet::readLimitSwitch() {
@@ -71,44 +74,65 @@ void WorkingSet::readLimitSwitch() {
 void WorkingSet::readTemperature() {
     //TODO
 }
+void WorkingSet::readButton() {
+    _button = analogRead(PIN_BUTTON);
+}
+
+/* SENSORS GETTERS */
 bool WorkingSet::getLimitSwitch() {
     return _limitSwitchStatus;
 }
 float WorkingSet::getTemperature() {
     return _temperature;
 }
+int WorkingSet::getButton() {
+    int out = BUTTON_NONE; // 1023
+    if (_button < 65)   out = BUTTON_RIGHT; // 0
+    else if (_button < 220)  out = BUTTON_UP; // 130
+    else if (_button < 400)  out = BUTTON_DOWN; // 305
+    else if (_button < 600)  out = BUTTON_LEFT; // 479
+    else if (_button < 850)  out = BUTTON_SELECT; // 720
+
+    if (_buttonHeld == out) {
+        return BUTTON_NONE;
+    }
+    else {
+        _buttonHeld = out;
+        return out;
+    }
+}
 
 
 Timer* WorkingSet::getTimer() {
     return _timer;
 }
-void WorkingSet::createTempTimer() {
+void WorkingSet::createTmpTimer() {
     _tempTimer = new Timer(_timer);
 }
-Timer* WorkingSet::getTempTimer() {
+Timer* WorkingSet::getTmpTimer() {
     return _tempTimer;
 }
-void WorkingSet::confirmTempTimer() {
+void WorkingSet::confirmTmpTimer() {
     delete _timer;
     _timer = _tempTimer;
     _tempTimer = NULL;
 }
-void WorkingSet::rejectTempTimer() {
+void WorkingSet::rejectTmpTimer() {
     delete _tempTimer;
 }
 
 float WorkingSet::getTargetTemp() {
     return (float) _targetTemp;
 }
-void WorkingSet::createTempTargetTemp() {
+void WorkingSet::createTmpTargetTemp() {
     _tempTargetTemp = _targetTemp;
 }
-float WorkingSet::getTempTargetTemp() {
+float WorkingSet::getTmpTargetTemp() {
     return _tempTargetTemp;
 }
-void WorkingSet::confirmTempTargetTemp() {
+void WorkingSet::confirmTmpTargetTemp() {
     _targetTemp = _tempTargetTemp;
 }
-void WorkingSet::changeTempTargetTemp(int amt) {
+void WorkingSet::changeTmpTargetTemp(int amt) {
     _tempTargetTemp += amt;
 }

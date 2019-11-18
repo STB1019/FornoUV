@@ -9,14 +9,16 @@
 #include "State_TimeSet.h"
 
 class State_Idle : public State {
-public:
-    State_Idle();
-    ~State_Idle();
-    State* execute(State* prevState);
-    void printLCD(LiquidCrystal lcd, State* prevState);
-protected:
-private:
-    State_Idle(int sel);
+    public:
+        State_Idle();
+        ~State_Idle();
+        void setup(State* prevState);
+        State* execute(State* prevState);
+        void printLCD(LiquidCrystal lcd, State* prevState);
+    protected:
+    private:
+        static const int cursorPos[][2];    
+        State_Idle(int sel);
 };
 
 // SELECTION meaning:

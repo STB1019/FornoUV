@@ -1,12 +1,15 @@
 #include "State_Idle.h"
 
-// State_Idle::_selected = 0;
+const int State_Idle::cursorPos[][2] = {{0, 0}, {0, 1}, {8, 0}};
 
 // public
 State_Idle::State_Idle() {
     setStateId(STATE_ID_IDLE);
 }
 State_Idle::~State_Idle() {
+
+}
+void State_Idle::setup(State* prevState){
 
 }
 State* State_Idle::execute(State* prevState) {
@@ -62,37 +65,35 @@ State* State_Idle::execute(State* prevState) {
 // |>TEMP xx° >START| |>TEMP           |
 // |----------------| |----------------|
 void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
-    // lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print(" TIME   ");
-    lcd.setCursor(8, 0);
-    lcd.print(" START  ");
-    lcd.setCursor(0,1);
-    lcd.print(" TEMP   ");
-
-    int posCol = -1;
-    int posRow = -1;
-    switch (_selected) {
-        case 0: // TIME
-            posCol = 0;
-            posRow = 0;
-            break;
-        case 1: // TEMP
-            posCol = 0;
-            posRow = 1;
-            break;
-        case 2: // START
-            posCol = 8;
-            posRow = 0;
-            break;
-        default:
-            break;
+    bool printCursor = true;
+    if (!this->equalState(prevState)) {
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("TIME");
+        lcd.setCursor(9, 0);
+        lcd.print("START");
+        lcd.setCursor(1,1);
+        lcd.print("TEMP");
+    }
+    else if (prevState != NULL) {
+        if (prevState->getSelection() == _selected)
+            printCursor = false;
     }
 
-    if (posCol != -1) {
-        lcd.setCursor(posCol, posRow);
-        lcd.print(">");
+
+    if (printCursor) {
+        int oldSel = prevState->getSelection();
+        if (this->equalState(prevState)) {
+            lcd.setCursor(cursorPos[oldSel][0], cursorPos[oldSel][1]);
+            lcd.print(' ');
+        }
+
+        lcd.setCursor(cursorPos[_selected][0], cursorPos[_selected][1]);
+        lcd.print('>');
     }
+
+    // lcd.setCursor(10, 1);
+    // lcd.print(_selected);
 }
 
 // private

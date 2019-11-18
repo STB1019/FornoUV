@@ -7,6 +7,9 @@ State_Finish::State_Finish() {
 State_Finish::~State_Finish() {
 
 }
+void State_Finish::setup(State* prevState){
+    
+}
 State* State_Finish::execute(State* prevState) {
     return new State_Finish();
 }

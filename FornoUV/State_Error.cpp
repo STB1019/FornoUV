@@ -7,6 +7,9 @@ State_Error::State_Error() {
 State_Error::~State_Error() {
 
 }
+void State_Error::setup(State* prevState){
+    
+}
 State* State_Error::execute(State* prevState) {
     return new State_Error();
 }

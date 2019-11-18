@@ -7,6 +7,9 @@ State_Confirm::State_Confirm() {
 State_Confirm::~State_Confirm() {
 
 }
+void State_Confirm::setup(State* prevState){
+    
+}
 State* State_Confirm::execute(State* prevState) {
     return new State_Confirm();
 }

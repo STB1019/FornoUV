@@ -7,6 +7,9 @@ State_Working::State_Working() {
 State_Working::~State_Working() {
 
 }
+void State_Working::setup(State* prevState){
+    
+}
 State* State_Working::execute(State* prevState) {
     return new State_Working();
 }

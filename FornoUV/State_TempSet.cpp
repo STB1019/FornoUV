@@ -1,5 +1,12 @@
 #include "State_TempSet.h"
 
+void formatNum(char* out, int num, int len);
+
+
+
+
+const int State_TempSet::cursorPos[][2] = {{0, 1}, {5, 1}};
+
 // public
 State_TempSet::State_TempSet() {
     setStateId(STATE_ID_TEMPSET);
@@ -7,16 +14,17 @@ State_TempSet::State_TempSet() {
 State_TempSet::~State_TempSet() {
 
 }
-State* State_TempSet::execute(State* prevState) {
+void State_TempSet::setup(State* prevState){
     WorkingSet* ws = WorkingSet::getInstance();
 
-    int prevStateId = prevState->getStateId();
-
     // just came from IDLE: create temporary target temperature value (deleted in case of cancellation)
-    if (prevStateId == STATE_ID_IDLE) {
-        ws->createTempTargetTemp();
+    if (prevState->equalId(STATE_ID_IDLE)) {
+        ws->createTmpTargetTemp();
     }
+}
 
+State* State_TempSet::execute(State* prevState) {
+    WorkingSet* ws = WorkingSet::getInstance();
 
     int button = ws->getButton();
 
@@ -28,7 +36,7 @@ State* State_TempSet::execute(State* prevState) {
     if (button == BUTTON_SELECT) {
         // ok
         if (_selected == 0)
-            ws->confirmTempTargetTemp();
+            ws->confirmTmpTargetTemp();
         // cancel: nothing to reject
 
         return new State_Idle();
@@ -55,7 +63,7 @@ State* State_TempSet::execute(State* prevState) {
         changeAmt = -1;
 
     if (changeAmt != 0)
-        ws->changeTempTargetTemp(changeAmt);
+        ws->changeTmpTargetTemp(changeAmt);
 
     return new State_TempSet(_selected);
 }
@@ -69,41 +77,65 @@ State* State_TempSet::execute(State* prevState) {
 // |----------------|
 void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
     WorkingSet* ws = WorkingSet::getInstance();
-    int temp = (int) ws->getTempTargetTemp();
+    int temp = (int) ws->getTmpTargetTemp();
+    char* tempstr = (char*) malloc(3 * sizeof(char));
+    formatNum(tempstr, temp, 2);
+
+    bool printCursor = true;
+    if (!this->equalState(prevState)) {
+        lcd.clear();
+
+        lcd.setCursor(1,1);
+        lcd.print("OK");
+
+        lcd.setCursor(6, 1);
+        lcd.print("CANCEL");
+    }
+    else {
+        if (prevState->getSelection() == _selected) {
+            printCursor = false;
+        }
+    }
+
+    if (printCursor) {
+        int oldSel = prevState->getSelection();
+        // cleanup only needed if the previous state has the same type
+        if (this->equalState(prevState)) {
+            lcd.setCursor(cursorPos[oldSel][0], cursorPos[oldSel][1]);
+            lcd.print(' ');
+        }
+
+        // selects OK or CANCEL
+        lcd.setCursor(cursorPos[_selected][0], cursorPos[_selected][1]);
+        lcd.print('>');
+    }
+
+
 
     lcd.setCursor(1, 0);
-    lcd.print((temp < 10 ? "0" : "") + temp);
-    lcd.setCursor(3, 0);
-    lcd.print("°C");
-
-    lcd.setCursor(1,1);
-    lcd.print("OK");
-
-    lcd.setCursor(6, 1);
-    lcd.print("CANCEL");
-
-    int posCol = -1;
-    int posRow = -1;
-    switch (_selected) {
-        case 0: // OK
-            posCol = 0;
-            posRow = 1;
-            break;
-        case 1: // CANCEL
-            posCol = 5;
-            posRow = 1;
-            break;
-        default:
-            break;
-    }
-
-    if (posCol != -1) {
-        lcd.setCursor(posCol, posRow);
-        lcd.print(">");
-    }
+    lcd.print(tempstr);
+    lcd.print((char)223);
+    lcd.print('C');
+    free(tempstr);
 }
 
 // private
 State_TempSet::State_TempSet(int selected) : State_TempSet::State_TempSet() {
     _selected = selected;
+}
+
+
+
+
+
+
+void formatNum(char* out, int num, int len) {
+    int i = len;
+    out[i] = '\0';
+    while (i > 0) {
+        i--;
+        int add = num % 10;
+        num /= 10;
+        out[i] = '0' + add;
+    }
 }

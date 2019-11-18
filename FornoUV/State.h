@@ -18,11 +18,15 @@
 
 class State {
     public:
+        virtual void setup(State* prevState) = 0;
         virtual State* execute(State* prevState) = 0;
-        int getStateId();
         virtual void printLCD(LiquidCrystal lcd, State* prevState) = 0;
+        int getStateId();
+        int getSelection();
+        bool equalId(int id);
     protected:
         void setStateId(int id);
+        bool equalState(State* prevState);
 
         int _selected = 0;
     private:
