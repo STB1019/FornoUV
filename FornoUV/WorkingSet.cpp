@@ -82,7 +82,7 @@ float WorkingSet::getTemperature() {
 Timer* WorkingSet::getTimer() {
     return _timer;
 }
-void WorkingSet::setTempTimer() {
+void WorkingSet::createTempTimer() {
     _tempTimer = new Timer(_timer);
 }
 Timer* WorkingSet::getTempTimer() {

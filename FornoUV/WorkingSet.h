@@ -34,7 +34,7 @@ class WorkingSet {
 
         /* OTHER STUFF */
         Timer* getTimer();
-        void setTempTimer();
+        void createTempTimer();
         Timer* getTempTimer();
         void confirmTempTimer();
         void rejectTempTimer();

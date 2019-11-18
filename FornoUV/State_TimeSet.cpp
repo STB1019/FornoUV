@@ -14,7 +14,7 @@ State* State_TimeSet::execute(State* prevState) {
 
     // just came from IDLE: create the temporary timer (deleted in case of cancellation)
     if (prevStateId == STATE_ID_IDLE) {
-        ws->setTempTimer();
+        ws->createTempTimer();
     }
 
 
@@ -51,12 +51,14 @@ State* State_TimeSet::execute(State* prevState) {
     }
 
     // handle digit cycling
+    // hh:mm (selected 0-3);
     if (_selected < 4) {
+        Timer* tt = ws->getTempTimer();
         if (button == BUTTON_UP) {
-            // increase timer digit
+            tt->incr(_selected, 1);
         }
         else if (button == BUTTON_DOWN) {
-            // decrease timer digit
+            tt->dect(_selected, 1);
         }
     }
     return new State_TimeSet(_selected);
