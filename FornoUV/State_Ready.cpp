@@ -12,7 +12,7 @@ State* State_Ready::execute(State* prevState) {
 }
 
 // protected
-void State_Ready::printLCD(LiquidCrystal lcd) {
+void State_Ready::printLCD(LiquidCrystal lcd, State* prevState) {
 
 }
 

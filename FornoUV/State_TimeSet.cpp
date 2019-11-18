@@ -71,7 +71,7 @@ State* State_TimeSet::execute(State* prevState) {
 // |_hh:mm          |
 // |>OK  >CANCEL    |
 // |----------------|
-void State_TimeSet::printLCD(LiquidCrystal lcd) {
+void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
     WorkingSet* ws = WorkingSet::getInstance();
     Timer* tt = ws->getTempTimer();
     char* timestr = tt->getPrintable("@h:@m");

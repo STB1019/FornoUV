@@ -127,7 +127,7 @@ int Timer::isRunning() {
     return running;
 }
 
-char* Timer::getPrintable(const char* format = "@h:@m:@s left") {
+char* Timer::getPrintable(const char* format) {
     Time remaining = this->rem();
 
     return remaining.getPrintable(format);

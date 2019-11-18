@@ -9,8 +9,8 @@ class State_Ready : public State {
         State_Ready();
         ~State_Ready();
         State* execute(State* prevState);
+        void printLCD(LiquidCrystal lcd, State* prevState);
     protected:
-        void printLCD(LiquidCrystal lcd);
     private:
 
 };

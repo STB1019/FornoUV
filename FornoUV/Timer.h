@@ -23,7 +23,7 @@ public:
     void pause();
     int isPaused();
     int isGoing();
-    char* getPrintable(const char* format = "@h:@m:@s left");
+    char* getPrintable(const char* format);
 private:
     void change(int pos, int amt);
     Time end;

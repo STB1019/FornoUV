@@ -9,8 +9,8 @@ class State_Error : public State {
         State_Error();
         ~State_Error();
         State* execute(State* prevState);
+        void printLCD(LiquidCrystal lcd, State* prevState);
     protected:
-        void printLCD(LiquidCrystal lcd);
     private:
 
 };

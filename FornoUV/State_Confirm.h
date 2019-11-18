@@ -9,8 +9,8 @@ class State_Confirm : public State {
         State_Confirm();
         ~State_Confirm();
         State* execute(State* prevState);
+        void printLCD(LiquidCrystal lcd, State* prevState);
     protected:
-        void printLCD(LiquidCrystal lcd);
     private:
 
 };

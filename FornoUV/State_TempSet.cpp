@@ -67,7 +67,7 @@ State* State_TempSet::execute(State* prevState) {
 // |_xx°C           |
 // |>OK  >CANCEL    |
 // |----------------|
-void State_TempSet::printLCD(LiquidCrystal lcd) {
+void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
     WorkingSet* ws = WorkingSet::getInstance();
     int temp = (int) ws->getTempTargetTemp();
 

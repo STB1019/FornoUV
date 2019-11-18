@@ -20,8 +20,8 @@ class State {
     public:
         virtual State* execute(State* prevState) = 0;
         int getStateId();
+        virtual void printLCD(LiquidCrystal lcd, State* prevState) = 0;
     protected:
-        virtual void printLCD(LiquidCrystal lcd) = 0;
         void setStateId(int id);
 
         int _selected = 0;
