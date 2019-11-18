@@ -54,8 +54,44 @@ State* State_Idle::execute(State* prevState) {
 }
 
 // protected
-void State_Idle::printLCD(LiquidCrystal lcd) {
 
+
+//  suggested          original (& implemented)
+// |----------------| |----------------|
+// |>TIME hh:mm     | |>TIME   >START  |
+// |>TEMP xx° >START| |>TEMP           |
+// |----------------| |----------------|
+void State_Idle::printLCD(LiquidCrystal lcd) {
+    lcd.clear();
+    lcd.setCursor(1,0);
+    lcd.print("TIME");
+    lcd.setCursor(9, 0)
+    lcd.print("START");
+    lcd.setCursor(1,1);
+    lcd.print("TEMP");
+
+    int posCol = -1;
+    int posRow = -1;
+    switch (_selected) {
+        case 0: // TIME
+            posCol = 0;
+            posRow = 0;
+            break;
+        case 1: // TEMP
+            posCol = 0;
+            posRow = 1;
+            break;
+        case 2: // START
+            posCol = 8;
+            posRow = 0;
+            break;
+        default:
+    }
+
+    if (posCol != -1) {
+        lcd.setCursor(posCol, posRow);
+        lcd.print(">");
+    }
 }
 
 // private
