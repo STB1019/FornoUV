@@ -13,7 +13,7 @@ class State_TempSet : public State {
         ~State_TempSet();
         State* execute(State* prevState);
     protected:
-        void printLCD();
+        void printLCD(LiquidCrystal lcd);
     private:
         State_TempSet(int selected);
 };

@@ -14,7 +14,7 @@ public:
     ~State_Idle();
     State* execute(State* prevState);
 protected:
-    void printLCD();
+    void printLCD(LiquidCrystal lcd);
 private:
     State_Idle(int sel);
 };

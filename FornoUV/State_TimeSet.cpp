@@ -65,7 +65,7 @@ State* State_TimeSet::execute(State* prevState) {
 }
 
 // protected
-void State_TimeSet::printLCD() {
+void State_TimeSet::printLCD(LiquidCrystal lcd) {
 
 }
 

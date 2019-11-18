@@ -18,16 +18,19 @@
 #include "State_TimeSet.h"
 #include "State_Working.h"
 
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 State* prev;
 State* curr;
 
 void setup() {
     curr = new State_Idle();
+    lcd.begin(16, 2);
 }
 
 void loop() {
     State* next = curr->execute(prev);
+    curr->printLCD(lcd);
 
     delete prev;
 

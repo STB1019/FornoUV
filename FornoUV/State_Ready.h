@@ -10,7 +10,7 @@ class State_Ready : public State {
         ~State_Ready();
         State* execute(State* prevState);
     protected:
-        void printLCD();
+        void printLCD(LiquidCrystal lcd);
     private:
 
 };

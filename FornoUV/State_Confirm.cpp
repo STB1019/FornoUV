@@ -12,7 +12,7 @@ State* State_Confirm::execute(State* prevState) {
 }
 
 // protected
-void State_Confirm::printLCD() {
+void State_Confirm::printLCD(LiquidCrystal lcd) {
 
 }
 

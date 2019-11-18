@@ -54,7 +54,7 @@ State* State_Idle::execute(State* prevState) {
 }
 
 // protected
-void State_Idle::printLCD() {
+void State_Idle::printLCD(LiquidCrystal lcd) {
 
 }
 
