@@ -34,7 +34,6 @@ class Time {
 
     long time;
     unsigned long spareMillis;
-    char * str;
 };
 
 

@@ -65,8 +65,46 @@ State* State_TimeSet::execute(State* prevState) {
 }
 
 // protected
-void State_TimeSet::printLCD(LiquidCrystal lcd) {
 
+
+// |----------------|
+// |_hh:mm          |
+// |>OK  >CANCEL    |
+// |----------------|
+void State_TimeSet::printLCD(LiquidCrystal lcd) {
+    WorkingSet* ws = WorkingSet::getInstance();
+    Timer* tt = ws->getTempTimer();
+    char* timestr = tt->getPrintable("@h:@m");
+
+    lcd.clear();
+    lcd.setCursor(1,0);
+    lcd.print(timestr);
+    free(timestr);
+
+    lcd.setCursor(1,1);
+    lcd.print("OK");
+
+    lcd.setCursor(6, 1);
+    lcd.print("CANCEL");
+
+    int posCol = -1;
+    int posRow = -1;
+    switch (_selected) {
+        case 0: // OK
+            posCol = 0;
+            posRow = 1;
+            break;
+        case 1: // CANCEL
+            posCol = 5;
+            posRow = 1;
+            break;
+        default:
+    }
+
+    if (posCol != -1) {
+        lcd.setCursor(posCol, posRow);
+        lcd.print(">");
+    }
 }
 
 // private

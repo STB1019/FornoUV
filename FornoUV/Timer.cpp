@@ -114,7 +114,7 @@ Time Timer::update() {
 
 Time Timer::rem() {
     if (!finished || running)
-    return end - passed;
+        return end - passed;
 
     return Time();
 }
@@ -125,4 +125,10 @@ int Timer::isDone() {
 
 int Timer::isRunning() {
     return running;
+}
+
+char* Timer::getPrintable(const char* format = "@h:@m:@s left") {
+    Time remaining = this->rem();
+
+    return remaining.getPrintable(format);
 }
