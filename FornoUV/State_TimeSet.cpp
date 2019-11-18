@@ -99,6 +99,7 @@ void State_TimeSet::printLCD(LiquidCrystal lcd) {
             posRow = 1;
             break;
         default:
+            break;
     }
 
     if (posCol != -1) {

@@ -1,6 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <LiquidCrystal.h>
+
 #include "Actuator.h"
 #include "WorkingSet.h"
 

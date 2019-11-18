@@ -11,11 +11,10 @@ Time::Time(long init) {
     spareMillis = 0;
 }
 Time::~Time() {
-    free(str);
 }
 
 char* Time::getPrintable(const char* format) {
-    char* str = malloc(17*sizeof(char));
+    char* str = (char*) malloc(17*sizeof(char));
     int ok = 1;
 
     int i = 0;
@@ -67,18 +66,18 @@ char* Time::getPrintable(const char* format) {
 
     char* out;
     if (ok) {
-        out = (o + 1) * sizeof(char);
+        out = (char*) malloc((o + 1) * sizeof(char));
         for (int k = 0; k < o; k++) {
             out[k] = str[k];
         }
         out[o] = '\0';
     }
     else {
-        out = 4 * sizeof(char);
+        out = (char*) malloc(4 * sizeof(char));
         out[0] = 'E';
         out[1] = 'r';
         out[2] = 'r';
-        out[3] = '\0
+        out[3] = '\0';
     }
 
     free(str);

@@ -65,7 +65,7 @@ void State_Idle::printLCD(LiquidCrystal lcd) {
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("TIME");
-    lcd.setCursor(9, 0)
+    lcd.setCursor(9, 0);
     lcd.print("START");
     lcd.setCursor(1,1);
     lcd.print("TEMP");
@@ -86,6 +86,7 @@ void State_Idle::printLCD(LiquidCrystal lcd) {
             posRow = 0;
             break;
         default:
+            break;
     }
 
     if (posCol != -1) {
