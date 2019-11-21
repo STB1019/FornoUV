@@ -6,6 +6,8 @@
 
 #include "State_Idle.h"
 
+#include "utils.h"
+
 
 class State_TempSet : public State {
     public:
@@ -17,7 +19,7 @@ class State_TempSet : public State {
     protected:
     private:
         static const int cursorPos[][2];
-        State_TempSet(int selected);
+        State_TempSet(int sel);
 };
 
 

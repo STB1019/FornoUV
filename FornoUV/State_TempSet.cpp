@@ -1,10 +1,5 @@
 #include "State_TempSet.h"
 
-void formatNum(char* out, int num, int len);
-
-
-
-
 const int State_TempSet::cursorPos[][2] = {{0, 1}, {5, 1}};
 
 // public
@@ -59,7 +54,7 @@ State* State_TempSet::execute(State* prevState) {
     int changeAmt = 0;
     if (button == BUTTON_UP)
         changeAmt = 1;
-    if (button == BUTTON_DOWN)
+    else if (button == BUTTON_DOWN)
         changeAmt = -1;
 
     if (changeAmt != 0)
@@ -90,6 +85,11 @@ void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
 
         lcd.setCursor(6, 1);
         lcd.print("CANCEL");
+
+        lcd.setCursor(3, 0);
+        lcd.print((char)223); // °
+        lcd.print('C');
+
     }
     else {
         if (prevState->getSelection() == _selected) {
@@ -114,28 +114,10 @@ void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
 
     lcd.setCursor(1, 0);
     lcd.print(tempstr);
-    lcd.print((char)223);
-    lcd.print('C');
     free(tempstr);
 }
 
 // private
-State_TempSet::State_TempSet(int selected) : State_TempSet::State_TempSet() {
-    _selected = selected;
-}
-
-
-
-
-
-
-void formatNum(char* out, int num, int len) {
-    int i = len;
-    out[i] = '\0';
-    while (i > 0) {
-        i--;
-        int add = num % 10;
-        num /= 10;
-        out[i] = '0' + add;
-    }
+State_TempSet::State_TempSet(int sel) : State_TempSet::State_TempSet() {
+    _selected = sel;
 }

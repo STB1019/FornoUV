@@ -13,7 +13,7 @@ class State_Preparation : public State {
         void printLCD(LiquidCrystal lcd, State* prevState);
     protected:
     private:
-
+        State_Preparation(int sel);
 };
 
 

@@ -4,6 +4,11 @@
 #include <Arduino.h>
 #include "State.h"
 
+#include "State_Idle.h"
+#include "State_Preparation.h"
+
+#include "utils.h"
+
 class State_Confirm : public State {
     public:
         State_Confirm();
@@ -13,7 +18,9 @@ class State_Confirm : public State {
         void printLCD(LiquidCrystal lcd, State* prevState);
     protected:
     private:
+        static const int cursorPos[][2];
 
+        State_Confirm(int sel);
 };
 
 

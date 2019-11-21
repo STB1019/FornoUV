@@ -111,13 +111,13 @@ void Time::increase(long mills) {
 
 int Time::isNull() {
     if (time == 0 && spareMillis == 0)
-    return 1;
+        return 1;
 
     if (time >= 0)
-    return 0;
+        return 0;
 
     if (time < 0)
-    return 1;
+        return 1;
 
 }
 

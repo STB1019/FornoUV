@@ -19,7 +19,7 @@ class State_TimeSet : public State {
     protected:
     private:
         static const int cursorPos[][2];
-        State_TimeSet(int selected);
+        State_TimeSet(int sel);
 };
 
 // SELECTION meaning:

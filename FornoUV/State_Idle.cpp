@@ -82,8 +82,8 @@ void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
 
 
     if (printCursor) {
-        int oldSel = prevState->getSelection();
         if (this->equalState(prevState)) {
+            int oldSel = prevState->getSelection();
             lcd.setCursor(cursorPos[oldSel][0], cursorPos[oldSel][1]);
             lcd.print(' ');
         }

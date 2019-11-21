@@ -135,6 +135,6 @@ void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
 }
 
 // private
-State_TimeSet::State_TimeSet(int selected) : State_TimeSet::State_TimeSet() {
-    _selected = selected;
+State_TimeSet::State_TimeSet(int sel) : State_TimeSet::State_TimeSet() {
+    _selected = sel;
 }
