@@ -16,15 +16,16 @@ State* State_Preparation::execute(State* prevState) {
 
 // protected
 void State_Preparation::printLCD(LiquidCrystal lcd, State* prevState) {
-    int index = (millis() / 200) % 32;
+    int index = (millis() / 25) % 32;
+    int index2 = (index + 32 - 8) % 32;
 
-    lcd.setCursor(index % 16, index / 16);
+    lcd.setCursor(index2 % 16, index2 / 16);
     lcd.print(' ');
 
     index++;
     index %= 32;
     lcd.setCursor(index % 16, index / 16);
-    lcd.print('+');
+    lcd.write((byte) 0);
 }
 
 // private

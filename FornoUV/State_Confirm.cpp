@@ -76,7 +76,7 @@ void State_Confirm::printLCD(LiquidCrystal lcd, State* prevState) {
         lcd.print(tempstr);
         free(tempstr);
 
-        lcd.setCursor(11, 0);
+        lcd.setCursor(6, 0);
         lcd.print(timestr);
         free(timestr);
     }

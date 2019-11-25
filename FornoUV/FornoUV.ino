@@ -20,12 +20,24 @@
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
+byte exclamation_point[] = {
+    B01110,
+    B01110,
+    B01110,
+    B00100,
+    B00000,
+    B00100,
+    B01110,
+    B00100
+};
+
 State* prev;
 State* curr;
 
 void setup() {
     curr = new State_Idle();
     lcd.begin(16, 2);
+    lcd.createChar((byte) 0, exclamation_point);
 }
 
 void loop() {

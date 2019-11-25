@@ -1,6 +1,6 @@
 #include "State_Idle.h"
 
-const int State_Idle::cursorPos[][2] = {{0, 0}, {0, 1}, {8, 0}};
+const int State_Idle::cursorPos[][2] = {{0, 0}, {0, 1}, {8, 1}};
 
 // public
 State_Idle::State_Idle() {
@@ -43,15 +43,15 @@ State* State_Idle::execute(State* prevState) {
         nextSel = 2;
     }
     else if (button == BUTTON_LEFT) {
-        if (_selected == 1) nextSel = 1;
-        else nextSel = 0;
+        if (_selected == 0) nextSel = 0;
+        else nextSel = 1;
     }
     else if (button == BUTTON_UP) {
-        if (_selected == 2) nextSel = 2;
-        else nextSel = 0;
+        nextSel = 0;
     }
     else if (button == BUTTON_DOWN) {
-        nextSel = 1;
+        if (_selected == 2) nextSel = 2;
+        else nextSel = 1;
     }
     return new State_Idle(nextSel);
 }
@@ -60,17 +60,19 @@ State* State_Idle::execute(State* prevState) {
 
 
 //  suggested          original (& implemented)
-// |----------------| |----------------|
-// |>TIME hh:mm     | |>TIME   >START  |
-// |>TEMP xx° >START| |>TEMP           |
-// |----------------| |----------------|
+// |----------------| |----------------| |----------------|
+// |>TIME hh:mm     | |>TIME   >START  | |>TIME           |
+// |>TEMP xx° >START| |>TEMP           | |>TEMP   >START  |
+// |----------------| |----------------| |----------------|
 void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
+
+
     bool printCursor = true;
     if (!this->equalState(prevState)) {
         lcd.clear();
         lcd.setCursor(1,0);
         lcd.print("TIME");
-        lcd.setCursor(9, 0);
+        lcd.setCursor(9, 1);
         lcd.print("START");
         lcd.setCursor(1,1);
         lcd.print("TEMP");
@@ -94,6 +96,8 @@ void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
 
     // lcd.setCursor(10, 1);
     // lcd.print(_selected);
+
+
 }
 
 // private
