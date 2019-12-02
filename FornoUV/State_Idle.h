@@ -15,9 +15,10 @@ class State_Idle : public State {
         void setup(State* prevState);
         State* execute(State* prevState);
         void printLCD(LiquidCrystal lcd, State* prevState);
+        void printLCDOpt(LCDOptimizer lcdOpt, State* prevState);
     protected:
     private:
-        static const int cursorPos[][2];    
+        static const int cursorPos[][2];
         State_Idle(int sel);
 };
 

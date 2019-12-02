@@ -99,6 +99,9 @@ void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
 
 
 }
+void State_Idle::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+
+}
 
 // private
 State_Idle::State_Idle(int sel) : State_Idle::State_Idle() {

@@ -133,6 +133,9 @@ void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
     lcd.print(timestr);
     free(timestr);
 }
+void State_TimeSet::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+
+}
 
 // private
 State_TimeSet::State_TimeSet(int sel) : State_TimeSet::State_TimeSet() {

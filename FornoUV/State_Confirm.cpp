@@ -38,6 +38,10 @@ State* State_Confirm::execute(State* prevState) {
 // protected
 
 
+void State_Confirm::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+    
+}
+
 // |----------------|
 // |_xx°C     _hh:mm|
 // |CONFIRM?  >Y  >N|

@@ -3,6 +3,8 @@
 
 #include <LiquidCrystal.h>
 
+#include "LCDOptimizer.h"
+
 #include "Actuator.h"
 #include "WorkingSet.h"
 
@@ -21,6 +23,7 @@ class State {
         virtual void setup(State* prevState) = 0;
         virtual State* execute(State* prevState) = 0;
         virtual void printLCD(LiquidCrystal lcd, State* prevState) = 0;
+        virtual void printLCDOpt(LCDOptimizer lcdOpt, State* prevState) = 0;
         int getStateId();
         int getSelection();
         bool equalId(int id);

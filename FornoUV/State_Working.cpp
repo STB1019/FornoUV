@@ -8,7 +8,7 @@ State_Working::~State_Working() {
 
 }
 void State_Working::setup(State* prevState){
-    
+
 }
 State* State_Working::execute(State* prevState) {
     return new State_Working();
@@ -16,6 +16,9 @@ State* State_Working::execute(State* prevState) {
 
 // protected
 void State_Working::printLCD(LiquidCrystal lcd, State* prevState) {
+
+}
+void State_Working::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
 
 }
 

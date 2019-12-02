@@ -27,6 +27,9 @@ void State_Preparation::printLCD(LiquidCrystal lcd, State* prevState) {
     lcd.setCursor(index % 16, index / 16);
     lcd.write((byte) 0);
 }
+void State_Preparation::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+
+}
 
 // private
 State_Preparation::State_Preparation(int sel) : State_Preparation::State_Preparation() {
