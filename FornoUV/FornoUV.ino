@@ -1,11 +1,10 @@
 #include <LiquidCrystal.h>
-#include <Adafruit_Sensor.h>
 
 #include "Time.h"
 #include "Timer.h"
 
 #include "WorkingSet.h"
-#include "Actuator.h";
+#include "Actuator.h"
 
 #include "State.h"
 #include "State_Confirm.h"
@@ -17,8 +16,11 @@
 #include "State_TempSet.h"
 #include "State_TimeSet.h"
 #include "State_Working.h"
+#include "LCDOptimizer.h"
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+//Pin: 8, 9, 4, 5, 6, 7 ; Line: 2 ; Cols: 16
+LCDOptimizer lcdOpt(8, 9, 4, 5, 6, 7, 2, 16);
 
 byte exclamation_point[] = {
     B01110,
