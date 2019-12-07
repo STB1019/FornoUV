@@ -1,4 +1,10 @@
-#include "State_Ready.h"
+#include "MachineState.h"
+
+void MachineState::execute_StateReady(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 
 // public
 State_Ready::State_Ready() {
@@ -20,3 +26,4 @@ void State_Ready::printLCD(LiquidCrystal lcd, State* prevState) {
 }
 
 // private
+*/

@@ -5,22 +5,11 @@
 
 #include "WorkingSet.h"
 #include "Actuator.h"
+#include "Trasductor.h"
 
-#include "State.h"
-#include "State_Confirm.h"
-#include "State_Error.h"
-#include "State_Finish.h"
-#include "State_Idle.h"
-#include "State_Preparation.h"
-#include "State_Ready.h"
-#include "State_TempSet.h"
-#include "State_TimeSet.h"
-#include "State_Working.h"
-#include "LCDOptimizer.h"
+#include "MachineState.h"
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
-//Pin: 8, 9, 4, 5, 6, 7 ; Line: 2 ; Cols: 16
-LCDOptimizer lcdOpt(8, 9, 4, 5, 6, 7, 2, 16);
 
 byte exclamation_point[] = {
     B01110,
@@ -33,27 +22,39 @@ byte exclamation_point[] = {
     B00100
 };
 
-State* prev;
-State* curr;
+MachineState automa(&lcd, STATE_IDLE);
+WorkingSet* ws = WorkingSet::getInstance();
+Trasductor* tras = Trasductor::getInstance();
+Actuator* act = Actuator::getInstance();
 
 void setup() {
-    curr = new State_Idle();
     lcd.begin(16, 2);
     lcd.createChar((byte) 0, exclamation_point);
 }
 
 void loop() {
-    WorkingSet* ws = WorkingSet::getInstance();
-    ws->readButton();
+    ExecStateFunct nextByInterrupt = ws->getInterruptNextState();
+    /* Disable interrupts to check if a previous interrupt change the next state to execute. 
+     * If so then set next state correctly else nothing. Then take off the inhibition of an interrupt 
+     * occours on the Actuator (so devices can't be activated from a state in execution after the interrupt actions).
+     * The interrupts stop need to be sure that if an interrupt occours in this moment, it will be managed after (so it can 
+     * inhibite Actuator and set another next state, that will be loaded on next loop execution).
+     */
+    noInterrupts();
+    if (nextByInterrupt != NULL) {
+      automa.setNextState(nextByInterrupt);
+    }
+    act->inhibitFromInterrupt(false); //remove interrupt inhibition
+    interrupts();
 
-    curr->setup(prev);
-    curr->printLCD(lcd, prev);
-    State* next = curr->execute(prev);
+    /* First thing to do before execute the current state is refresh the sensor's data in the Trasductor.
+     */
+    tras->readButton();
+    tras->readTemperature();
 
-    delete prev;
-
-    prev = curr;
-    curr = next;
+    /* Execution of the current state. Transactions and LCD prints need to be managed inside the execution.
+     */
+    automa.doExecution();
 }
 
 /*

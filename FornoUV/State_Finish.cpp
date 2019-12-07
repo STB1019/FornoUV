@@ -1,4 +1,10 @@
-#include "State_Finish.h"
+#include "MachineState.h"
+
+void MachineState::execute_StateFinish(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 
 // public
 State_Finish::State_Finish() {
@@ -20,3 +26,4 @@ void State_Finish::printLCD(LiquidCrystal lcd, State* prevState) {
 }
 
 // private
+*/

@@ -1,4 +1,10 @@
-#include "State_Error.h"
+#include "MachineState.h"
+
+void MachineState::execute_StateError(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 
 // public
 State_Error::State_Error() {
@@ -20,3 +26,4 @@ void State_Error::printLCD(LiquidCrystal lcd, State* prevState) {
 }
 
 // private
+*/

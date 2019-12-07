@@ -1,5 +1,10 @@
-#include "State_Preparation.h"
+#include "MachineState.h"
 
+void MachineState::execute_StatePreparation(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 // public
 State_Preparation::State_Preparation() {
     setStateId(STATE_ID_PREPARATION);
@@ -32,3 +37,4 @@ void State_Preparation::printLCD(LiquidCrystal lcd, State* prevState) {
 State_Preparation::State_Preparation(int sel) : State_Preparation::State_Preparation() {
     _selected = sel;
 }
+*/

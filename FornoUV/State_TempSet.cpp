@@ -1,4 +1,10 @@
-#include "State_TempSet.h"
+#include "MachineState.h"
+
+void MachineState::execute_StateTempset(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 
 const int State_TempSet::cursorPos[][2] = {{0, 1}, {5, 1}};
 
@@ -121,3 +127,4 @@ void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
 State_TempSet::State_TempSet(int sel) : State_TempSet::State_TempSet() {
     _selected = sel;
 }
+*/

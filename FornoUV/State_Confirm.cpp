@@ -1,5 +1,10 @@
-#include "State_Confirm.h"
+#include "MachineState.h"
 
+void MachineState::execute_StateConfirm(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 const int State_Confirm::cursorPos[][2] = {{10, 1}, {14, 1}};
 
 // public
@@ -105,3 +110,4 @@ void State_Confirm::printLCD(LiquidCrystal lcd, State* prevState) {
 State_Confirm::State_Confirm(int sel) : State_Confirm::State_Confirm() {
     _selected = sel;
 }
+*/

@@ -1,4 +1,10 @@
-#include "State_Idle.h"
+#include "MachineState.h"
+
+void MachineState::execute_StateIdle(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+
+}
+
+/*
 
 const int State_Idle::cursorPos[][2] = {{0, 0}, {0, 1}, {8, 1}};
 
@@ -104,3 +110,4 @@ void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
 State_Idle::State_Idle(int sel) : State_Idle::State_Idle() {
     _selected = sel;
 }
+*/
