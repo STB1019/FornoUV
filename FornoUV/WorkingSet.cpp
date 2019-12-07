@@ -7,8 +7,10 @@ WorkingSet* WorkingSet::getInstance() {
 }
 
 WorkingSet::WorkingSet() {
-    _timer = new Timer(0, 15, 0); // default: 15 minutes
+    _timer = Timer(0, 15, 0); // default: 15 minutes
+    _tmpTimer = Timer(&_timer);
     _targetTemp = 50; // default: 50°C
+    _tmpTargetTemp = _targetTemp;
 }
 
 void WorkingSet::setInterruptNextState(ExecStateFunct interruptNextState) {
@@ -18,36 +20,38 @@ ExecStateFunct WorkingSet::getInterruptNextState() {
     return this->_interruptNextState;
 }
 
-Timer* WorkingSet::getTimer() {
-    return _timer;
-}
-void WorkingSet::createTmpTimer() {
-    _tempTimer = new Timer(_timer);
-}
-Timer* WorkingSet::getTmpTimer() {
-    return _tempTimer;
-}
-void WorkingSet::confirmTmpTimer() {
-    delete _timer;
-    _timer = _tempTimer;
-    _tempTimer = NULL;
-}
-void WorkingSet::rejectTmpTimer() {
-    delete _tempTimer;
-}
-
+/*TEMPERATURE*/
 float WorkingSet::getTargetTemp() {
     return (float) _targetTemp;
 }
 void WorkingSet::createTmpTargetTemp() {
-    _tempTargetTemp = _targetTemp;
+    _tmpTargetTemp = _targetTemp;
 }
 float WorkingSet::getTmpTargetTemp() {
-    return _tempTargetTemp;
+    return _tmpTargetTemp;
 }
 void WorkingSet::confirmTmpTargetTemp() {
-    _targetTemp = _tempTargetTemp;
+    _targetTemp = _tmpTargetTemp;
 }
 void WorkingSet::changeTmpTargetTemp(int amt) {
-    _tempTargetTemp += amt;
+    _tmpTargetTemp += amt;
 }
+
+
+/*TIME*/
+Timer* WorkingSet::getTimer() {
+    return &_timer;
+}
+void WorkingSet::createTmpTimer() {
+    _tmpTimer.clone(&_timer);
+}
+Timer* WorkingSet::getTmpTimer() {
+    return &_tmpTimer;
+}
+void WorkingSet::confirmTmpTimer() {
+    _timer.clone(&_tmpTimer);
+}
+void WorkingSet::rejectTmpTimer() {
+    //DONOTHING
+}
+

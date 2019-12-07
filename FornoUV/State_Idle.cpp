@@ -1,9 +1,15 @@
 #include "MachineState.h"
 
-#include<Arduino.h>
+#include "Time.h"
+#include "Timer.h"
 
 void MachineState::execute_StateIdle(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
     static int counter = 0;
+    static Timer timer(0,15,0);
+    char strTime[6];
+
+    if (timer.isRunning() == 0)
+        timer.start();
 
     if (prevStateId == STATE_ID_FINISH)
         counter = 0;
@@ -16,6 +22,16 @@ void MachineState::execute_StateIdle(MachineState* machine, LiquidCrystal* lcd, 
     
     lcd->setCursor(1, 1);
     lcd->print(counter);
+
+    lcd->setCursor(10,1);
+    lcd->print(strTime);
+
+    timer.update();
+    timer.getStaticPrintable("@m:@s", strTime);
+    lcd->setCursor(4,1);
+    lcd->print(strTime);
+    
+
     counter++;
     delay(1000);
 

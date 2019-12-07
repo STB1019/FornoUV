@@ -14,17 +14,24 @@ Timer::Timer(int h, int m, int s) : Timer::Timer() {
     this->setTime(h, m, s);
 }
 Timer::Timer(Timer* timer) : Timer::Timer() {
-    Time toEnd = timer->end;
-    end.set(toEnd.time);
+    this->clone(timer);
 }
 
 Timer::~Timer() {}
+
+void Timer::clone(Timer* timer) {
+    Time toEnd = timer->end;
+    Time passedClone = timer->passed;
+    end.set(toEnd.time);
+    passed.set(passedClone.time);
+    running = timer->running;
+    finished = timer->finished;
+}
 
 void Timer::setTime(int h, int m, int s) {
     long secs = 3600 * h + 60 * m + s;
     end.set(secs);
 }
-
 
 void Timer::decr(int pos, int amt) {
     this->change(pos, -amt);
@@ -126,6 +133,12 @@ int Timer::isDone() {
 
 int Timer::isRunning() {
     return running;
+}
+
+int Timer::getStaticPrintable(const char* format, char* str) {
+    Time remaining = this->rem();
+
+    return remaining.getStaticPrintable(format, str);
 }
 
 char* Timer::getPrintable(const char* format) {

@@ -10,6 +10,7 @@ public:
     Timer();
     Timer(int h, int m, int s);
     Timer(Timer* timer);
+    void clone(Timer* timer);
     void setTime(int h, int m, int s);
     void start();
     Time update();
@@ -23,6 +24,7 @@ public:
     void pause();
     int isPaused();
     int isGoing();
+    int getStaticPrintable(const char* format, char* str);
     char* getPrintable(const char* format);
 private:
     void change(int pos, int amt);
