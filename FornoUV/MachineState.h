@@ -2,6 +2,7 @@
 #define MACHINE_STATE_H
 
 #include <LiquidCrystal.h>
+#include <Arduino.h>
 
 #define NO_STATE -1
 #define STATE_ID_IDLE  0

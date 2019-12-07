@@ -1,6 +1,6 @@
 #include "Trasductor.h"
 
-Trasductor Trasductor::_instance; //TODO test
+Trasductor Trasductor::_instance;
 
 Trasductor* Trasductor::getInstance() {
     return &_instance;

@@ -34,6 +34,12 @@ void setup() {
 
 void loop() {
     ExecStateFunct nextByInterrupt = ws->getInterruptNextState();
+
+    /* First thing to do before execute the current state is refresh the sensor's data in the Trasductor.
+     */
+    tras->readButton();
+    tras->readTemperature();
+    
     /* Disable interrupts to check if a previous interrupt change the next state to execute. 
      * If so then set next state correctly else nothing. Then take off the inhibition of an interrupt 
      * occours on the Actuator (so devices can't be activated from a state in execution after the interrupt actions).
@@ -46,11 +52,6 @@ void loop() {
     }
     act->inhibitFromInterrupt(false); //remove interrupt inhibition
     interrupts();
-
-    /* First thing to do before execute the current state is refresh the sensor's data in the Trasductor.
-     */
-    tras->readButton();
-    tras->readTemperature();
 
     /* Execution of the current state. Transactions and LCD prints need to be managed inside the execution.
      */

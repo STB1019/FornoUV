@@ -1,6 +1,6 @@
 #include "Actuator.h"
 
-Actuator Actuator::_instance; //TODO test
+Actuator Actuator::_instance;
 
 Actuator* Actuator::getInstance() {
     return &_instance;

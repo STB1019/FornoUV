@@ -1,7 +1,32 @@
 #include "MachineState.h"
 
-void MachineState::execute_StateIdle(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+#include<Arduino.h>
 
+void MachineState::execute_StateIdle(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
+    static int counter = 0;
+
+    if (prevStateId == STATE_ID_FINISH)
+        counter = 0;
+
+    lcd->clear();
+    lcd->setCursor(1,0);
+    lcd->print("STATE: ");
+    lcd->setCursor(8, 0);
+    lcd->print(STATE_ID_IDLE);
+    
+    lcd->setCursor(1, 1);
+    lcd->print(counter);
+    counter++;
+    delay(1000);
+
+    if (counter == 15)
+        machine->doTransition(STATE_ID_IDLE, STATE_CONFIRM);
+    else if (counter == 10)
+        machine->doTransition(STATE_ID_IDLE, STATE_TIMESET);
+    else if (counter == 5)
+        machine->doTransition(STATE_ID_IDLE, STATE_TEMPSET);
+    else
+        machine->doTransition(STATE_ID_IDLE, STATE_IDLE);
 }
 
 /*
