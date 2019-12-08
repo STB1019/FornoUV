@@ -9,6 +9,9 @@
 
 #include "MachineState.h"
 
+//#define DEBUG
+#define DEBUG_COUNTER 100000
+
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 byte exclamation_point[] = {
@@ -27,9 +30,18 @@ WorkingSet* ws = WorkingSet::getInstance();
 Trasductor* tras = Trasductor::getInstance();
 Actuator* act = Actuator::getInstance();
 
+#ifdef DEBUG
+  long counter = 0;
+  long startTime = 0;
+#endif
+
 void setup() {
     lcd.begin(16, 2);
     lcd.createChar((byte) 0, exclamation_point);
+
+    #ifdef DEBUG
+      startTime = millis();
+    #endif
 }
 
 void loop() {
@@ -39,7 +51,7 @@ void loop() {
      */
     tras->readButton();
     tras->readTemperature();
-    
+
     /* Disable interrupts to check if a previous interrupt change the next state to execute. 
      * If so then set next state correctly else nothing. Then take off the inhibition of an interrupt 
      * occours on the Actuator (so devices can't be activated from a state in execution after the interrupt actions).
@@ -56,6 +68,24 @@ void loop() {
     /* Execution of the current state. Transactions and LCD prints need to be managed inside the execution.
      */
     automa.doExecution();
+
+    #ifdef DEBUG
+      counter++;
+
+      if (counter == DEBUG_COUNTER) {
+        long time = millis() - startTime;
+        double timeByLoop = time * 1.0 / DEBUG_COUNTER;
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print(time);
+        lcd.print("ms");
+        lcd.setCursor(0,1);
+        lcd.print(timeByLoop);
+        lcd.print("ms/loop");
+
+        automa.setNextState(NULL);
+      }
+    #endif
 }
 
 /*

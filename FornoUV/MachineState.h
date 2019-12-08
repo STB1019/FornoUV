@@ -3,6 +3,7 @@
 
 #include <LiquidCrystal.h>
 #include <Arduino.h>
+//#include "WorkingSet.h"   DO NOT INCLUDE THIS HERE OR CIRCULAR INCLUDES ERROR!!
 
 #define NO_STATE -1
 #define STATE_ID_IDLE  0

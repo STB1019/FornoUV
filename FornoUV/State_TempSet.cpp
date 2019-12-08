@@ -1,149 +1,88 @@
 #include "MachineState.h"
+#include "Trasductor.h"
+#include "WorkingSet.h"
+#include "utils.h"
+
+#define TEMPSET_MENU_OK 0
+#define TEMPSET_MENU_CANCEL 1
 
 void MachineState::execute_StateTempset(MachineState* machine, LiquidCrystal* lcd, int prevStateId) {
-    static int counter = 0;
+    //                                      0: OK ;;; 1: CANCEL 
+    static const int CURSOR_POSITIONS[][2] = {{0, 1}, {5, 1}};
+    static WorkingSet* ws = WorkingSet::getInstance();
+    static Trasductor* tras = Trasductor::getInstance();
+    static int selected = 0;
+    ExecStateFunct next = STATE_TEMPSET;
+    char strtemp[3];
 
-    if (prevStateId != STATE_ID_TEMPSET)
-        counter = 0;
-
-    lcd->clear();
-    lcd->setCursor(1,0);
-    lcd->print("STATE: ");
-    lcd->setCursor(8, 0);
-    lcd->print(STATE_ID_TEMPSET);
-    
-    lcd->setCursor(1, 1);
-    lcd->print(counter);
-    counter++;
-    delay(1000);
-
-    if (counter == 5)
-        machine->doTransition(STATE_ID_TEMPSET, STATE_IDLE);
-    else
-        machine->doTransition(STATE_ID_TEMPSET, STATE_TEMPSET);
-}
-
-/*
-
-const int State_TempSet::cursorPos[][2] = {{0, 1}, {5, 1}};
-
-// public
-State_TempSet::State_TempSet() {
-    setStateId(STATE_ID_TEMPSET);
-}
-State_TempSet::~State_TempSet() {
-
-}
-void State_TempSet::setup(State* prevState){
-    WorkingSet* ws = WorkingSet::getInstance();
-
-    // just came from IDLE: create temporary target temperature value (deleted in case of cancellation)
-    if (prevState->equalId(STATE_ID_IDLE)) {
+    /*Not autoring, so there's to set state for the first time*/
+    if (prevStateId != STATE_ID_TEMPSET) {
         ws->createTmpTargetTemp();
-    }
-}
 
-State* State_TempSet::execute(State* prevState) {
-    WorkingSet* ws = WorkingSet::getInstance();
-
-    int button = ws->getButton();
-
-    // nothing pressed: nothing to do
-    if (button == BUTTON_NONE)
-        return new State_TempSet(_selected);
-
-    // we proceed to the state IDLE, using (ok) or not (cancel) the new value
-    if (button == BUTTON_SELECT) {
-        // ok
-        if (_selected == 0)
-            ws->confirmTmpTargetTemp();
-        // cancel: nothing to reject
-
-        return new State_Idle();
+        lcd->clear();
+        selected = TEMPSET_MENU_OK;
+        formatNum(strtemp, ws->getTmpTargetTemp(), 2);
+        lcd->setCursor(1,0);
+        lcd->print(strtemp);
+        lcd->print((char)223); // °
+        lcd->print('C');
+        lcd->setCursor(CURSOR_POSITIONS[selected][0],CURSOR_POSITIONS[selected][1]);
+        lcd->print(CURSOR);
+        lcd->print("OK   CANCEL");
     }
 
-    // handle movement in the menu:
-    // > ok (0)  > cancel (1)
-    int nextSel = -1;
-    if (button == BUTTON_RIGHT) {
-        nextSel = _selected < 1 ? _selected + 1 : _selected;
-    }
-    else if (button == BUTTON_LEFT) {
-        nextSel = _selected > 0 ? _selected - 1 : _selected;
-    }
+    int button = tras->getButton();
 
-    if (nextSel != -1) {
-        return new State_TempSet(nextSel);
-    }
+    if (button != BUTTON_NONE) {
+        // it proceeds to the state determined by _selected
+        if (button == BUTTON_SELECT) {
+            if (selected == TEMPSET_MENU_OK) {
+                //confirms the new temperature setted into the state
+                ws->confirmTmpTargetTemp();
+            }
+            else {// if (selected == TEMPSET_MENU_CANCEL) {
+                //DO NOTHING
+            }
+            next = STATE_IDLE;
+        }
+        // handle movement in the menu:
+        else {
+            // |----------------|
+            // |_xx°C           |
+            // |>OK  >CANCEL    |
+            // |----------------|
+            if (button == BUTTON_RIGHT) {
+                if (selected != TEMPSET_MENU_CANCEL) {
+                    printMenuCursor(lcd, CURSOR_POSITIONS, selected, true); //erase old
+                    selected = TEMPSET_MENU_CANCEL;
+                    printMenuCursor(lcd, CURSOR_POSITIONS, selected, false); //print new
+                }
+            }
+            else if (button == BUTTON_LEFT) {
+                if (selected != TEMPSET_MENU_OK) {
+                    printMenuCursor(lcd, CURSOR_POSITIONS, selected, true); //erase old
+                    selected = TEMPSET_MENU_OK;
+                    printMenuCursor(lcd, CURSOR_POSITIONS, selected, false); //print new
+                }
+            }
+            else {
+                //Actions on temperature
+                int amnt = 0;
 
-    int changeAmt = 0;
-    if (button == BUTTON_UP)
-        changeAmt = 1;
-    else if (button == BUTTON_DOWN)
-        changeAmt = -1;
+                if (button == BUTTON_UP) {
+                    amnt = 1;
+                }
+                else if (button == BUTTON_DOWN) {
+                    amnt = -1;
+                }
 
-    if (changeAmt != 0)
-        ws->changeTmpTargetTemp(changeAmt);
-
-    return new State_TempSet(_selected);
-}
-
-// protected
-
-
-// |----------------|
-// |_xx°C           |
-// |>OK  >CANCEL    |
-// |----------------|
-void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
-    WorkingSet* ws = WorkingSet::getInstance();
-    int temp = (int) ws->getTmpTargetTemp();
-    char* tempstr = (char*) malloc(3 * sizeof(char));
-    formatNum(tempstr, temp, 2);
-
-    bool printCursor = true;
-    if (!this->equalState(prevState)) {
-        lcd.clear();
-
-        lcd.setCursor(1,1);
-        lcd.print("OK");
-
-        lcd.setCursor(6, 1);
-        lcd.print("CANCEL");
-
-        lcd.setCursor(3, 0);
-        lcd.print((char)223); // °
-        lcd.print('C');
-
-    }
-    else {
-        if (prevState->getSelection() == _selected) {
-            printCursor = false;
+                ws->changeTmpTargetTemp(amnt);
+                formatNum(strtemp, ws->getTmpTargetTemp(), 2);
+                lcd->setCursor(1,0);
+                lcd->print(strtemp);
+            }
         }
     }
 
-    if (printCursor) {
-        int oldSel = prevState->getSelection();
-        // cleanup only needed if the previous state has the same type
-        if (this->equalState(prevState)) {
-            lcd.setCursor(cursorPos[oldSel][0], cursorPos[oldSel][1]);
-            lcd.print(' ');
-        }
-
-        // selects OK or CANCEL
-        lcd.setCursor(cursorPos[_selected][0], cursorPos[_selected][1]);
-        lcd.print('>');
-    }
-
-
-
-    lcd.setCursor(1, 0);
-    lcd.print(tempstr);
-    free(tempstr);
+    machine->doTransition(STATE_ID_TEMPSET, next);
 }
-
-// private
-State_TempSet::State_TempSet(int sel) : State_TempSet::State_TempSet() {
-    _selected = sel;
-}
-*/

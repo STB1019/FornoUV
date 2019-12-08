@@ -10,3 +10,11 @@ void formatNum(char* out, int num, int len) {
         out[i] = '0' + add;
     }
 }
+
+void printMenuCursor(LiquidCrystal* lcd, const int positions[][2], int ind, bool erase) {
+    lcd->setCursor(positions[ind][0],positions[ind][1]);
+    if (erase)
+        lcd->print(CURSOR_ERASE);
+    else
+        lcd->print(CURSOR);
+}
