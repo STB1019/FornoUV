@@ -12,6 +12,8 @@
 //#define DEBUG
 #define DEBUG_COUNTER 100000
 
+#define READING_SENSOR_FILTER 10
+
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 byte exclamation_point[] = {
@@ -26,9 +28,10 @@ byte exclamation_point[] = {
 };
 
 MachineState automa(&lcd, STATE_IDLE);
-WorkingSet* ws = WorkingSet::getInstance();
-Trasductor* tras = Trasductor::getInstance();
-Actuator* act = Actuator::getInstance();
+WorkingSet* ws;
+Trasductor* tras;
+Actuator* act;
+byte sensorReadingFilter;
 
 #ifdef DEBUG
   long counter = 0;
@@ -38,6 +41,10 @@ Actuator* act = Actuator::getInstance();
 void setup() {
     lcd.begin(16, 2);
     lcd.createChar((byte) 0, exclamation_point);
+    ws = WorkingSet::getInstance();
+    tras = Trasductor::getInstance();
+    act = Actuator::getInstance();
+    sensorReadingFilter = READING_SENSOR_FILTER;
 
     #ifdef DEBUG
       startTime = millis();
@@ -49,8 +56,12 @@ void loop() {
 
     /* First thing to do before execute the current state is refresh the sensor's data in the Trasductor.
      */
-    tras->readButton();
-    tras->readTemperature();
+    sensorReadingFilter++;
+    if (sensorReadingFilter == READING_SENSOR_FILTER) {
+      tras->readButton();
+      tras->readTemperature();
+      sensorReadingFilter = 0;
+    }
 
     /* Disable interrupts to check if a previous interrupt change the next state to execute. 
      * If so then set next state correctly else nothing. Then take off the inhibition of an interrupt 

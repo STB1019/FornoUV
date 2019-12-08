@@ -32,7 +32,7 @@ class Trasductor {
         int _button;
         bool _limitSwitchStatus;
         float _temperature;
-        int _buttonHeld = BUTTON_NONE;
+        int _buttonHeld;
 
 };
 

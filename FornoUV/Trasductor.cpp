@@ -9,9 +9,13 @@ Trasductor* Trasductor::getInstance() {
 Trasductor::Trasductor() {
     pinMode(PIN_BUTTON, INPUT);
 
+    /*
     readLimitSwitch();
     readTemperature();
     readButton();
+    */
+    this->_button = 1024;
+    this->_buttonHeld = BUTTON_NONE;
 }
 
 /* SENSORS DATA */
