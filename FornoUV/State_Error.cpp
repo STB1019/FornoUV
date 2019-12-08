@@ -18,7 +18,7 @@ State* State_Error::execute(State* prevState) {
 void State_Error::printLCD(LiquidCrystal lcd, State* prevState) {
 
 }
-void State_Error::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+void State_Error::printLCDOpt(LCDOptimizer* lcdOpt, State* prevState) {
 
 }
 

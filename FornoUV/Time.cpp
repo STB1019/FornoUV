@@ -14,11 +14,18 @@ Time::~Time() {
 }
 
 char* Time::getPrintable(const char* format) {
+    Serial.println("printable");
     char* str = (char*) malloc(17*sizeof(char));
+    if (str == NULL) {
+        Serial.println("str malloc fallito");
+        int a = 1/0;
+    }
     int ok = 1;
 
     int i = 0;
     int o = 0;
+    Serial.print("format: ");
+    Serial.println(format);
     while (format[i] != '\0' && ok) {
         char ch = format[i];
         if (ch != '@') {
@@ -58,10 +65,14 @@ char* Time::getPrintable(const char* format) {
         }
         i++;
     }
-
+    Serial.println("  middle printable");
     char* out;
     if (ok) {
         out = (char*) malloc((o + 1) * sizeof(char));
+        if (out == NULL) {
+            Serial.println("out malloc fallito");
+            int a = 1/0;
+        }
         for (int k = 0; k < o; k++) {
             out[k] = str[k];
         }
@@ -69,6 +80,10 @@ char* Time::getPrintable(const char* format) {
     }
     else {
         out = (char*) malloc(4 * sizeof(char));
+        if (out == NULL) {
+            Serial.println("out malloc fallito");
+            int a = 1/0;
+        }
         out[0] = 'E';
         out[1] = 'r';
         out[2] = 'r';
@@ -77,6 +92,7 @@ char* Time::getPrintable(const char* format) {
 
     free(str);
 
+    Serial.println("  end printable");
     return out;
 }
 

@@ -9,7 +9,6 @@ public:
   ~Button();
   void update();
   bool isPressed();
-  void print();
 
 private:
   bool _signal; // true if the button has been pressed enough to use the signal
@@ -21,15 +20,6 @@ private:
   int _maxbounce;
 };
 
-
-void Button::print() {
-  Serial.print(_signal);
-  Serial.print("   ");
-  Serial.print(_current);
-  Serial.print("   ");
-  Serial.print((int)_bounce);
-  Serial.println("   ");
-}
 
 Button::Button(volatile unsigned char* ppin, char pin, int maxbounce) {
   _signal = false;
@@ -44,7 +34,7 @@ Button::Button(volatile unsigned char* ppin, char pin, int maxbounce) {
 Button::~Button() {}
 
 void Button::update() {
-  
+
   _current = !( ((*(_ppin)) & (B1 << _pin)) == (B1 << _pin) );
 
   if (!_signal) { // the button isn't considered pressed
@@ -94,7 +84,7 @@ bool Button::isPressed() {
 //  * In order to determine the "pressed" status, it uses the following method
 //  *  - A button is pressed only once it was actually pressed for MAXBOUNCE calls
 //  *  - A button is released only once it was actually released for MAXBOUNCE calls
-//  * 
+//  *
 //  * @param[out] btn the button to be updated
 //  * @return A boolean value determined by the status of the button (true if pressed)
 //  */
@@ -125,7 +115,7 @@ bool Button::isPressed() {
 //         btn->_signal = false;
 //     }
 //   }
- 
+
 //   return btn->_signal;
 // }
 

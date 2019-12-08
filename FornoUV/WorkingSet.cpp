@@ -1,10 +1,18 @@
 #include "WorkingSet.h"
 
 WorkingSet* WorkingSet::_instance = NULL;
+char* WorkingSet::stringa = NULL;
 
 WorkingSet* WorkingSet::getInstance() {
     if (_instance == NULL) {
         _instance = new WorkingSet();
+        stringa = (char*) malloc(6 * sizeof(char));
+        stringa[0] = 'A';
+        stringa[1] = 'B';
+        stringa[2] = ':';
+        stringa[3] = 'C';
+        stringa[4] = 'D';
+        stringa[5] = '\0';
     }
     return _instance;
 }
@@ -112,6 +120,14 @@ void WorkingSet::createTmpTimer() {
 Timer* WorkingSet::getTmpTimer() {
     return _tempTimer;
 }
+char* WorkingSet::getPrintableTmpTimer(const char* format) {
+    // if (_tempTimer->hasBeenEdited() || _tempTimerStr == NULL) {
+    //     free(_tempTimerStr);
+    //     _tempTimerStr = _tempTimer->getPrintable(format);
+    // }
+    // return _tempTimerStr;
+    return stringa;
+}
 void WorkingSet::confirmTmpTimer() {
     delete _timer;
     _timer = _tempTimer;
@@ -119,6 +135,7 @@ void WorkingSet::confirmTmpTimer() {
 }
 void WorkingSet::rejectTmpTimer() {
     delete _tempTimer;
+    free(_tempTimerStr);
 }
 
 float WorkingSet::getTargetTemp() {

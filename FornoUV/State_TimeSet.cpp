@@ -2,6 +2,7 @@
 
 const int State_TimeSet::cursorPos[][2] = {{1, 0}, {2, 0}, {4, 0}, {5, 0}, {0, 1}, {5, 1}};
 
+bool State_TimeSet::lastBlinkingOn = true;
 // public
 State_TimeSet::State_TimeSet() {
     setStateId(STATE_ID_TIMESET);
@@ -77,17 +78,11 @@ State* State_TimeSet::execute(State* prevState) {
 
 // protected
 
-
-// |----------------|
-// |_hh:mm          |
-// |>OK  >CANCEL    |
-// |----------------|
 void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
     WorkingSet* ws = WorkingSet::getInstance();
     Timer* tt = ws->getTmpTimer();
-    char* timestr = tt->getPrintable("@h:@m");
 
-
+    // prints all of the stuff for the first time and determines the cursor
     bool printCursor = true;
     if (!this->equalState(prevState)) {
         lcd.clear();
@@ -104,9 +99,31 @@ void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
         }
     }
 
+    // update the timer
+    if (tt->hasBeenEdited()) {
+        // Serial.print("edited");
+
+        char* tempString = ws->getPrintableTmpTimer(TIME_FORMAT_STRING);
+        Serial.println("meta");
+        lcd.setCursor(1,0);
+        lcd.print(tempString);
+
+        Serial.println("printed");
+        // Serial.println(ws->getPrintableTmpTimer(TIME_FORMAT_STRING));
+
+        lastBlinkingOn = true; // reset blinking status
+    }
+
+    int c = cursorPos[_selected][0];
+    int r = cursorPos[_selected][1];
 
     if (printCursor) {
         int oldSel = prevState->getSelection();
+        // Serial.print(c);
+        // Serial.print(", ");
+        // Serial.print(r);
+        // Serial.print(", ");
+        // Serial.println(oldSel);
         // selects one of the digits of the timer -> nothing
         // selects OK or CANCEL -> cleanup only needed if the previous state has the same type
         if (this->equalState(prevState) && oldSel >= 4) {
@@ -116,25 +133,124 @@ void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
 
         // selects OK or CANCEL
         if (_selected >= 4) {
-            lcd.setCursor(cursorPos[_selected][0], cursorPos[_selected][1]);
+            lcd.setCursor(c, r);
             lcd.print('>');
         }
     }
 
-    // selects one of the digits of the timer -> nothing
+
     if (_selected <= 3) {
-        if ((millis() / BLINK_TIME_OFF) % (1 + BLINK_TIME_ON / BLINK_TIME_OFF) == 0) {
+        // determines if the blinking cell should be on or off now
+        bool isBlinkingOn = ((millis() / BLINK_TIME_OFF) % (1 + BLINK_TIME_ON / BLINK_TIME_OFF) != 0);
+
+        // the blinking cell was on and it must be turned off now
+        if (lastBlinkingOn && !isBlinkingOn) {
+            lastBlinkingOn = false;
+            lcd.setCursor(c, r);
+            lcd.print(' ');
+        }
+        // the blinking cell was off and it must be turned on now
+        else if (!lastBlinkingOn && isBlinkingOn) {
+            lastBlinkingOn = true;
             int index = (_selected < 2 ? _selected : _selected + 1);
-            timestr[index] = ' ';
+
+            char* tmpStr = ws->getPrintableTmpTimer(TIME_FORMAT_STRING);
+
+            lcd.setCursor(c, r);
+            lcd.print(tmpStr[index]);
         }
     }
-
-    lcd.setCursor(1, 0);
-    lcd.print(timestr);
-    free(timestr);
 }
-void State_TimeSet::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
 
+// |----------------|
+// |_hh:mm          |
+// |>OK  >CANCEL    |
+// |----------------|
+// void State_TimeSet::printLCD(LiquidCrystal lcd, State* prevState) {
+//     WorkingSet* ws = WorkingSet::getInstance();
+//     Timer* tt = ws->getTmpTimer();
+//     char* timestr = tt->getPrintable(TIME_FORMAT_STRING);
+//
+//
+//     bool printCursor = true;
+//     if (!this->equalState(prevState)) {
+//         lcd.clear();
+//
+//         lcd.setCursor(1,1);
+//         lcd.print("OK");
+//
+//         lcd.setCursor(6, 1);
+//         lcd.print("CANCEL");
+//     }
+//     else {
+//         if (prevState->getSelection() == _selected) {
+//             printCursor = false;
+//         }
+//     }
+//
+//
+//     if (printCursor) {
+//         int oldSel = prevState->getSelection();
+//
+//         // Serial.println(oldSel);
+//         // selects one of the digits of the timer -> nothing
+//         // selects OK or CANCEL -> cleanup only needed if the previous state has the same type
+//         if (this->equalState(prevState) && oldSel >= 4) {
+//             lcd.setCursor(cursorPos[oldSel][0], cursorPos[oldSel][1]);
+//             lcd.print(' ');
+//         }
+//
+//         // selects OK or CANCEL
+//         if (_selected >= 4) {
+//             lcd.setCursor(cursorPos[_selected][0], cursorPos[_selected][1]);
+//             lcd.print('>');
+//         }
+//     }
+//
+//     // selects one of the digits of the timer -> nothing
+//     if (_selected <= 3) {
+//         if ((millis() / BLINK_TIME_OFF) % (1 + BLINK_TIME_ON / BLINK_TIME_OFF) == 0) {
+//             int index = (_selected < 2 ? _selected : _selected + 1);
+//             timestr[index] = ' ';
+//         }
+//     }
+//
+//     lcd.setCursor(1, 0);
+//     lcd.print(timestr);
+//     free(timestr);
+// }
+
+
+char State_TimeSet::rows[][17] = {
+    "                ",
+    " OK   CANCEL    "
+};
+
+
+void State_TimeSet::printLCDOpt(LCDOptimizer* lcdOpt, State* prevState) {
+    int c = cursorPos[_selected][0];
+    int r = cursorPos[_selected][1];
+
+    WorkingSet* ws = WorkingSet::getInstance();
+    Timer* tt = ws->getTmpTimer();
+    char* timestr = tt->getPrintable(TIME_FORMAT_STRING);
+    strCpy(rows[0], timestr, 1);
+
+    if (_selected <= 3) {
+        if ((millis() / BLINK_TIME_OFF) % (1 + BLINK_TIME_ON / BLINK_TIME_OFF) == 0) {
+            rows[r][c] = ' ';
+        }
+    }
+    else {
+        rows[r][c] = '>';
+    }
+
+    lcdOpt->printLine(0, rows[0]);
+    lcdOpt->printLine(1, rows[1]);
+
+    strFill(rows[0], ' ', 1, 6);
+    rows[r][c] = ' ';
+    free(timestr);
 }
 
 // private

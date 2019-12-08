@@ -11,8 +11,7 @@ byte LCDOptimizer::exclamation_point_2[] = {
     B00100
 };
 
-LCDOptimizer::LCDOptimizer(byte pin1, byte pin2, byte pin3, byte pin4, byte pin5, byte pin6, int numLine, int lineLength) {
-    this->lcd = new LiquidCrystal(pin1, pin2, pin3, pin4, pin5, pin6);
+LCDOptimizer::LCDOptimizer(byte pin1, byte pin2, byte pin3, byte pin4, byte pin5, byte pin6, int numLine, int lineLength) : LiquidCrystal(pin1,pin2,pin3,pin4,pin5,pin6) {
     this->_numLine = numLine;
     this->_lineLength = lineLength;
 
@@ -23,22 +22,21 @@ LCDOptimizer::LCDOptimizer(byte pin1, byte pin2, byte pin3, byte pin4, byte pin5
             printed[i][j] = ' ';
     }
 
-    lcd->begin(lineLength, numLine);
-    lcd->createChar((byte) 0, exclamation_point_2);
+    this->begin(lineLength, numLine);
+    this->createChar((byte) 0, exclamation_point_2);
 }
 LCDOptimizer::~LCDOptimizer() {
     for(int i = 0; i < this->_numLine; i++) {
         free(printed[i]);
     }
     free(printed);
-    free(lcd);
 }
 void LCDOptimizer::clear() {
-    this->lcd->clear();
+    LiquidCrystal::clear();
 }
 /* Prints the line character by character only when the previous printed is different. */
 void LCDOptimizer::printLine(int numLine, const char* str) {
-    int lastPrinted = -1;
+    int lastPrinted = -2;
     char* line = printed[numLine];
 
     if (numLine < 0 || numLine >= this->_numLine)
@@ -49,9 +47,9 @@ void LCDOptimizer::printLine(int numLine, const char* str) {
             line[i] = str[i];
 
             if (lastPrinted != i-1) {
-                this->lcd->setCursor(i, numLine);
+                this->setCursor(i, numLine);
             }
-            this->lcd->print(line[i]);
+            print(line[i]);
             lastPrinted = i;
         }
     }

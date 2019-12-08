@@ -116,7 +116,7 @@ void State_TempSet::printLCD(LiquidCrystal lcd, State* prevState) {
     lcd.print(tempstr);
     free(tempstr);
 }
-void State_TempSet::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+void State_TempSet::printLCDOpt(LCDOptimizer* lcdOpt, State* prevState) {
 
 }
 

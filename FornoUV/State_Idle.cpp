@@ -99,8 +99,23 @@ void State_Idle::printLCD(LiquidCrystal lcd, State* prevState) {
 
 
 }
-void State_Idle::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
 
+char State_Idle::rows[][17] = {
+    " TIME           ",
+    " TEMP    START  "
+};
+
+void State_Idle::printLCDOpt(LCDOptimizer* lcdOpt, State* prevState) {
+
+
+    int c = cursorPos[_selected][0];
+    int r = cursorPos[_selected][1];
+    rows[r][c] = '>';
+
+    lcdOpt->printLine(0, rows[0]);
+    lcdOpt->printLine(1, rows[1]);
+
+    rows[r][c] = ' ';
 }
 
 // private

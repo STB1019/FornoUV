@@ -9,6 +9,7 @@ Timer::Timer() {
     passed = Time(0);
     running = 0;
     finished = 0;
+    isEdited = true;
 }
 Timer::Timer(int h, int m, int s) : Timer::Timer() {
     this->setTime(h, m, s);
@@ -35,6 +36,8 @@ void Timer::incr(int pos, int amt) {
 }
 
 void Timer::change(int pos, int amt) {
+    isEdited = true;
+
     finished = 0;
     long inc = 0;
     switch (pos) {
@@ -128,8 +131,12 @@ int Timer::isRunning() {
     return running;
 }
 
-char* Timer::getPrintable(const char* format) {
-    Time remaining = this->rem();
+bool Timer::hasBeenEdited() {
+    return isEdited;
+}
 
+char* Timer::getPrintable(const char* format) {
+    isEdited = false;
+    Time remaining = this->rem();
     return remaining.getPrintable(format);
 }

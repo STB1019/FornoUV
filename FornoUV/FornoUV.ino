@@ -1,4 +1,6 @@
+#include <Arduino.h>
 #include <LiquidCrystal.h>
+#include "LCDOptimizer.h"
 
 #include "Time.h"
 #include "Timer.h"
@@ -16,39 +18,62 @@
 #include "State_TempSet.h"
 #include "State_TimeSet.h"
 #include "State_Working.h"
-#include "LCDOptimizer.h"
-
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
-//Pin: 8, 9, 4, 5, 6, 7 ; Line: 2 ; Cols: 16
-LCDOptimizer lcdOpt(8, 9, 4, 5, 6, 7, 2, 16);
-
-byte exclamation_point[] = {
-    B01110,
-    B01110,
-    B01110,
-    B00100,
-    B00000,
-    B00100,
-    B01110,
-    B00100
-};
 
 State* prev;
 State* curr;
 
+// LCDOptimizer* lcdOpt;
+LiquidCrystal lcd(8,9,4,5,6,7);
+
 void setup() {
+    // lcdOpt = new LCDOptimizer(8, 9, 4, 5, 6, 7, 2, 16);
+
+    Serial.begin(9600);
+    Serial.println("start");
+    lcd.begin(16,2);
+
     curr = new State_Idle();
-    lcd.begin(16, 2);
-    lcd.createChar((byte) 0, exclamation_point);
 }
 
+
+unsigned long count = 0;
+unsigned long start;
+#define MAXI 1000000
 void loop() {
+    if (count == 0)
+        start = millis();
+
     WorkingSet* ws = WorkingSet::getInstance();
     ws->readButton();
 
+
     curr->setup(prev);
     curr->printLCD(lcd, prev);
+    // curr->printLCDOpt(lcdOpt, prev);
     State* next = curr->execute(prev);
+
+
+    lcd.setCursor(12, 0);
+    lcd.print((int) (count % 10000));
+
+    // if (count >= MAXI) {
+    //     long time = millis() - start;
+    //
+    //     lcd.clear();
+    //     lcd.print(time);
+    //     lcd.print("ms");
+    //
+    //     // char timeStr[11];
+    //     // formatNum(timeStr, time, 8, ' ');
+    //     // timeStr[8] = 'm';
+    //     // timeStr[9] = 's';
+    //     // timeStr[10] = '\0';
+    //     //
+    //     // lcdOpt->clear();
+    //     // lcdOpt->printLine(0, timeStr);
+    //     while(true);
+    // }
+    count++;
 
     delete prev;
 
@@ -96,7 +121,6 @@ void setup()
   lcd.begin(16, 2);              // start the library
   t.setTime(0, 0, 15);
   //t.start();
-  Serial.begin(9600);
 
   dht.begin();
 }

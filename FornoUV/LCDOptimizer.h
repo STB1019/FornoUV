@@ -6,7 +6,7 @@
 
 
 
-class LCDOptimizer {
+class LCDOptimizer : protected LiquidCrystal {
     public:
         LCDOptimizer(byte pin1, byte pin2, byte pin3, byte pin4, byte pin5, byte pin6, int numLine, int lineLength);
         ~LCDOptimizer();
@@ -15,7 +15,6 @@ class LCDOptimizer {
 
     private:
         static byte exclamation_point_2[];
-        LiquidCrystal* lcd;
         int _numLine;
         int _lineLength;
         char** printed;

@@ -23,6 +23,7 @@ public:
     void pause();
     int isPaused();
     int isGoing();
+    bool hasBeenEdited();
     char* getPrintable(const char* format);
 private:
     void change(int pos, int amt);
@@ -32,6 +33,8 @@ private:
     int running;
     int finished;
     int paused;
+
+    bool isEdited;
 };
 
 

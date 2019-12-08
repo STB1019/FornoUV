@@ -41,6 +41,7 @@ class WorkingSet {
         Timer* getTimer();
         void createTmpTimer();
         Timer* getTmpTimer();
+        char* getPrintableTmpTimer(const char* format);
         void confirmTmpTimer();
         void rejectTmpTimer();
 
@@ -58,14 +59,17 @@ class WorkingSet {
         bool _ledUVStatus;
         bool _motorStatus;
         bool _fanStatus;
-        int _button;
         bool _limitSwitchStatus;
+
+        int _button;
+        int _buttonHeld = BUTTON_NONE;
+
         float _temperature;
         Timer* _timer;
         Timer* _tempTimer;
+        char* _tempTimerStr;
         int _targetTemp;
         int _tempTargetTemp;
-        int _buttonHeld = BUTTON_NONE;
         WorkingSet();
 
         /* DEVICE STATUS */
@@ -76,6 +80,10 @@ class WorkingSet {
         void setMotor(bool status);
         void setFan(bool status);
         void setButton(int status);
+
+
+
+        static char* stringa;
 };
 
 #endif

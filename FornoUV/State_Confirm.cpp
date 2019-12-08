@@ -38,7 +38,7 @@ State* State_Confirm::execute(State* prevState) {
 // protected
 
 
-void State_Confirm::printLCDOpt(LCDOptimizer lcdOpt, State* prevState) {
+void State_Confirm::printLCDOpt(LCDOptimizer* lcdOpt, State* prevState) {
     
 }
 
